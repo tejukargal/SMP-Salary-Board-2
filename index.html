@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMP Salary Board</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <i class="fas fa-chart-line"></i>
+                    SMP Salary Board
+                </h1>
+                <div class="header-controls">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button class="logout-btn" id="logoutBtn" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- CSV Upload Section -->
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-card">
+                    <h2>Upload Salary Data</h2>
+                    <div class="upload-area">
+                        <input type="file" id="csvFile" accept=".csv" hidden>
+                        <label for="csvFile" class="upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click to upload CSV file</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Section -->
+            <div class="login-section" id="loginSection" style="display: none;">
+                <div class="login-card">
+                    <h2>Employee Login</h2>
+                    <div class="input-group">
+                        <label for="empNo">Employee Number</label>
+                        <input type="text" id="empNo" placeholder="Enter your employee number">
+                    </div>
+                    <button class="login-btn" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                    <button class="dashboard-btn" id="dashboardBtn">
+                        <i class="fas fa-chart-pie"></i>
+                        View Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div class="dashboard-section" id="dashboardSection" style="display: none;">
+                <div class="dashboard-header">
+                    <h2>Salary Dashboard</h2>
+                    <div class="dashboard-controls">
+                        <select id="yearFilter">
+                            <option value="">All Years</option>
+                        </select>
+                        <select id="monthFilter">
+                            <option value="">All Months</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="period-display" id="periodDisplay">
+                    <!-- Period information will be displayed here -->
+                </div>
+                
+                <div class="metrics-grid" id="metricsGrid">
+                    <!-- Metric cards will be generated here -->
+                </div>
+
+                <div class="consolidated-data-section">
+                    <h3>Consolidated Salary Data</h3>
+                    <div class="data-table-container">
+                        <table class="consolidated-table" id="consolidatedTable">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Year</th>
+                                    <th>Employees</th>
+                                    <th>Total Gross</th>
+                                    <th>Total Deductions</th>
+                                    <th>Total Net</th>
+                                </tr>
+                            </thead>
+                            <tbody id="consolidatedTableBody">
+                                <!-- Table rows will be generated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Details Section -->
+            <div class="employee-section" id="employeeSection" style="display: none;">
+                <div class="employee-header">
+                    <h2 id="employeeName">Employee Details</h2>
+                    <button class="back-btn" id="backBtn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Login
+                    </button>
+                </div>
+                
+                <div class="employee-metrics" id="employeeMetrics">
+                    <!-- Employee metric cards will be generated here -->
+                </div>
+
+                <div class="employee-details-table">
+                    <h3>Salary History</h3>
+                    <div class="data-table-container">
+                        <table class="consolidated-table" id="employeeTable">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Year</th>
+                                    <th>Gross Salary</th>
+                                    <th>Deductions</th>
+                                    <th>Net Salary</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeeTableBody">
+                                <!-- Table rows will be generated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 SMP Salary Board. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
