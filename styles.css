@@ -470,19 +470,21 @@ body {
 
 .details-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
 .detail-item {
   background: var(--surface-color);
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
   text-align: center;
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
 }
 
 .detail-item:hover {
@@ -491,16 +493,91 @@ body {
 }
 
 .detail-item .label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
 .detail-item .value {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-primary);
   font-weight: 600;
+}
+
+/* Colored borders for different categories */
+.detail-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--border-color);
+}
+
+/* Allowances - Green variants */
+.detail-item.allowance::before {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.detail-item.allowance-basic::before {
+  background: linear-gradient(90deg, #065f46, #047857);
+}
+
+.detail-item.allowance-da::before {
+  background: linear-gradient(90deg, #16a34a, #15803d);
+}
+
+.detail-item.allowance-hra::before {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.detail-item.allowance-other::before {
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+}
+
+/* Deductions - Red variants */
+.detail-item.deduction::before {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.detail-item.deduction-tax::before {
+  background: linear-gradient(90deg, #b91c1c, #991b1b);
+}
+
+.detail-item.deduction-insurance::before {
+  background: linear-gradient(90deg, #dc2626, #b91c1c);
+}
+
+.detail-item.deduction-other::before {
+  background: linear-gradient(90deg, #f87171, #ef4444);
+}
+
+/* Totals - Blue variants */
+.detail-item.total-gross::before {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+}
+
+.detail-item.total-net::before {
+  background: linear-gradient(90deg, #059669, #047857);
+}
+
+.detail-item.total-deductions::before {
+  background: linear-gradient(90deg, #dc2626, #b91c1c);
+}
+
+/* General info - Purple variants */
+.detail-item.info::before {
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+.detail-item.info-designation::before {
+  background: linear-gradient(90deg, #6366f1, #4f46e5);
+}
+
+.detail-item.info-employees::before {
+  background: linear-gradient(90deg, #06b6d4, #0891b2);
 }
 
 .employee-section {
@@ -668,7 +745,7 @@ tr:hover {
   }
   
   .details-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
   
   .employee-header {

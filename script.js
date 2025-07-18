@@ -103,28 +103,99 @@ class SalaryBoardApp {
     }
 
     parseCSV(csvText) {
+        console.log('Starting CSV parsing...');
         const lines = csvText.split('\n');
-        const headers = lines[0].split(',').map(h => h.trim());
+        console.log(`Total lines in CSV: ${lines.length}`);
         
+        // Handle header row more robustly
+        const headerLine = lines[0];
+        let headers;
+        
+        if (headerLine.includes(',')) {
+            headers = this.parseCSVLine(headerLine).map(h => h.trim());
+        } else {
+            headers = headerLine.split(',').map(h => h.trim());
+        }
+        
+        console.log('Headers:', headers);
         this.salaryData = [];
+        let processedCount = 0;
+        let skippedCount = 0;
+        let currentRecord = '';
+        let inQuotedField = false;
         
+        // Parse CSV handling multiline fields
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
-            if (!line) continue;
             
-            const values = this.parseCSVLine(line);
-            if (values.length >= headers.length) {
+            // Skip empty lines
+            if (!line || line.length === 0) {
+                skippedCount++;
+                continue;
+            }
+            
+            // Check if we're continuing a multiline field
+            if (currentRecord) {
+                currentRecord += ' ' + line;
+            } else {
+                currentRecord = line;
+            }
+            
+            // Check if this line completes a record
+            const quoteCount = (currentRecord.match(/"/g) || []).length;
+            inQuotedField = quoteCount % 2 !== 0;
+            
+            // If we're not in a quoted field, try to parse the record
+            if (!inQuotedField) {
+                const values = this.parseCSVLine(currentRecord);
+                
+                // Check if we have the right number of fields (or close to it)
+                if (values.length >= headers.length - 2) { // Allow some tolerance
+                    // Create record
+                    const record = {};
+                    headers.forEach((header, index) => {
+                        record[header] = values[index]?.trim() || '';
+                    });
+                    
+                    // Only add records with valid employee numbers
+                    if (record['EMP No'] && record['EMP No'] !== '' && record['EMP No'] !== 'EMP No' && /^\d+$/.test(record['EMP No'])) {
+                        this.salaryData.push(record);
+                        processedCount++;
+                    } else {
+                        console.log(`Skipped record with invalid EMP No: "${record['EMP No']}", Line: ${currentRecord.substring(0, 100)}`);
+                        skippedCount++;
+                    }
+                    
+                    currentRecord = '';
+                } else {
+                    // Not enough fields, might be a continuation
+                    console.log(`Incomplete record, continuing... Fields: ${values.length}, Expected: ${headers.length}, Line: ${currentRecord.substring(0, 100)}`);
+                }
+            }
+        }
+        
+        // Handle any remaining record
+        if (currentRecord && !inQuotedField) {
+            const values = this.parseCSVLine(currentRecord);
+            if (values.length >= headers.length - 2) {
                 const record = {};
                 headers.forEach((header, index) => {
                     record[header] = values[index]?.trim() || '';
                 });
                 
-                // Only add records with valid employee numbers
-                if (record['EMP No'] && record['EMP No'] !== '') {
+                if (record['EMP No'] && record['EMP No'] !== '' && record['EMP No'] !== 'EMP No' && /^\d+$/.test(record['EMP No'])) {
                     this.salaryData.push(record);
+                    processedCount++;
+                } else {
+                    skippedCount++;
                 }
             }
         }
+        
+        console.log(`CSV parsing completed:`);
+        console.log(`- Total records processed: ${processedCount}`);
+        console.log(`- Records skipped: ${skippedCount}`);
+        console.log(`- Final salary data length: ${this.salaryData.length}`);
         
         this.processData();
     }
@@ -133,21 +204,39 @@ class SalaryBoardApp {
         const values = [];
         let current = '';
         let inQuotes = false;
+        let i = 0;
         
-        for (let i = 0; i < line.length; i++) {
+        while (i < line.length) {
             const char = line[i];
             
             if (char === '"') {
+                // Handle escaped quotes
+                if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+                    current += '"';
+                    i += 2;
+                    continue;
+                }
                 inQuotes = !inQuotes;
             } else if (char === ',' && !inQuotes) {
-                values.push(current);
+                // Clean up the value and handle multiline fields
+                let cleanValue = current.trim();
+                // Remove any remaining quotes
+                cleanValue = cleanValue.replace(/^"|"$/g, '');
+                // Clean up multiline designation fields
+                cleanValue = cleanValue.replace(/\s+/g, ' ').trim();
+                values.push(cleanValue);
                 current = '';
             } else {
                 current += char;
             }
+            i++;
         }
         
-        values.push(current);
+        // Handle the last value
+        let cleanValue = current.trim();
+        cleanValue = cleanValue.replace(/^"|"$/g, '');
+        cleanValue = cleanValue.replace(/\s+/g, ' ').trim();
+        values.push(cleanValue);
         return values;
     }
 
@@ -168,7 +257,12 @@ class SalaryBoardApp {
             const name = record['Name'];
             const designation = record['Designation'];
 
-            // Calculate Gross Salary: Basic + DA + HRA + IR + SFN + SPAY-TYPIST + P
+            // Use existing calculated values from CSV
+            const grossSalary = parseFloat(record['Gross Salary']?.replace(/,/g, '') || 0);
+            const totalDeductions = parseFloat(record['Total Deductions']?.replace(/,/g, '') || 0);
+            const netSalary = parseFloat(record['Net Salary']?.replace(/,/g, '') || 0);
+
+            // Individual components for breakdown display
             const basic = parseFloat(record['Basic']?.replace(/,/g, '') || 0);
             const da = parseFloat(record['DA']?.replace(/,/g, '') || 0);
             const hra = parseFloat(record['HRA']?.replace(/,/g, '') || 0);
@@ -176,18 +270,11 @@ class SalaryBoardApp {
             const sfn = parseFloat(record['SFN']?.replace(/,/g, '') || 0);
             const spayTypist = parseFloat(record['SPAY-TYPIST']?.replace(/,/g, '') || 0);
             const p = parseFloat(record['P']?.replace(/,/g, '') || 0);
-            const grossSalary = basic + da + hra + ir + sfn + spayTypist + p;
-
-            // Calculate Total Deductions: IT + PT + GSLIC + LIC + FBF
             const it = parseFloat(record['IT']?.replace(/,/g, '') || 0);
             const pt = parseFloat(record['PT']?.replace(/,/g, '') || 0);
             const gslic = parseFloat(record['GSLIC']?.replace(/,/g, '') || 0);
             const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
             const fbf = parseFloat(record['FBF']?.replace(/,/g, '') || 0);
-            const totalDeductions = it + pt + gslic + lic + fbf;
-
-            // Net Salary = Gross Salary - Total Deductions
-            const netSalary = grossSalary - totalDeductions;
 
             // Employee data
             if (!this.processedData.employees[empNo]) {
@@ -209,6 +296,18 @@ class SalaryBoardApp {
                 netSalary,
                 grossSalary,
                 totalDeductions,
+                basic,
+                da,
+                hra,
+                ir,
+                sfn,
+                spayTypist,
+                p,
+                it,
+                pt,
+                gslic,
+                lic,
+                fbf,
                 record
             });
 
@@ -266,7 +365,12 @@ class SalaryBoardApp {
         this.processedData.months = Array.from(this.processedData.months);
         this.processedData.totalEmployees = Object.keys(this.processedData.employees).length;
 
-        console.log('Processed data:', this.processedData);
+        console.log('Data processing completed:');
+        console.log(`- Total employees: ${this.processedData.totalEmployees}`);
+        console.log(`- Years: ${this.processedData.years.join(', ')}`);
+        console.log(`- Months: ${this.processedData.months.join(', ')}`);
+        console.log(`- Total salary records: ${this.salaryData.length}`);
+        console.log('Sample employee data:', Object.values(this.processedData.employees)[0]);
     }
 
     showUploadSection() {
@@ -388,26 +492,14 @@ class SalaryBoardApp {
         let totalLIC = 0;
 
         filteredData.forEach(record => {
-            // Calculate Gross Salary: Basic + DA + HRA + IR + SFN + SPAY-TYPIST + P
-            const basic = parseFloat(record['Basic']?.replace(/,/g, '') || 0);
-            const da = parseFloat(record['DA']?.replace(/,/g, '') || 0);
-            const hra = parseFloat(record['HRA']?.replace(/,/g, '') || 0);
-            const ir = parseFloat(record['IR']?.replace(/,/g, '') || 0);
-            const sfn = parseFloat(record['SFN']?.replace(/,/g, '') || 0);
-            const spayTypist = parseFloat(record['SPAY-TYPIST']?.replace(/,/g, '') || 0);
-            const p = parseFloat(record['P']?.replace(/,/g, '') || 0);
-            const grossSalary = basic + da + hra + ir + sfn + spayTypist + p;
+            // Use existing calculated values from CSV
+            const grossSalary = parseFloat(record['Gross Salary']?.replace(/,/g, '') || 0);
+            const deductions = parseFloat(record['Total Deductions']?.replace(/,/g, '') || 0);
+            const netSalary = parseFloat(record['Net Salary']?.replace(/,/g, '') || 0);
 
-            // Calculate Total Deductions: IT + PT + GSLIC + LIC + FBF
+            // Individual components for summary metrics
             const it = parseFloat(record['IT']?.replace(/,/g, '') || 0);
-            const pt = parseFloat(record['PT']?.replace(/,/g, '') || 0);
-            const gslic = parseFloat(record['GSLIC']?.replace(/,/g, '') || 0);
             const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
-            const fbf = parseFloat(record['FBF']?.replace(/,/g, '') || 0);
-            const deductions = it + pt + gslic + lic + fbf;
-
-            // Net Salary = Gross Salary - Total Deductions
-            const netSalary = grossSalary - deductions;
 
             totalGrossSalary += grossSalary;
             totalDeductions += deductions;
@@ -420,37 +512,37 @@ class SalaryBoardApp {
         const metrics = [
             {
                 title: 'Total Employees',
-                value: uniqueEmployees.toLocaleString(),
+                value: this.formatIndianNumber(uniqueEmployees),
                 change: null,
                 class: 'primary'
             },
             {
                 title: 'Total Gross Salary',
-                value: `₹${Math.round(totalGrossSalary).toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalGrossSalary))}`,
                 change: null,
                 class: 'secondary'
             },
             {
                 title: 'Total Deductions',
-                value: `₹${Math.round(totalDeductions).toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalDeductions))}`,
                 change: null,
                 class: 'accent'
             },
             {
                 title: 'Total Net Salary',
-                value: `₹${Math.round(totalNetSalary).toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalNetSalary))}`,
                 change: null,
                 class: 'primary'
             },
             {
                 title: 'Total IT',
-                value: `₹${Math.round(totalIT).toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalIT))}`,
                 change: null,
                 class: 'secondary'
             },
             {
                 title: 'Total LIC',
-                value: `₹${Math.round(totalLIC).toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalLIC))}`,
                 change: null,
                 class: 'accent'
             }
@@ -557,26 +649,10 @@ class SalaryBoardApp {
             
             groupedData[key].records.push(record);
             
-            // Calculate Gross Salary: Basic + DA + HRA + IR + SFN + SPAY-TYPIST + P
-            const basic = parseFloat(record['Basic']?.replace(/,/g, '') || 0);
-            const da = parseFloat(record['DA']?.replace(/,/g, '') || 0);
-            const hra = parseFloat(record['HRA']?.replace(/,/g, '') || 0);
-            const ir = parseFloat(record['IR']?.replace(/,/g, '') || 0);
-            const sfn = parseFloat(record['SFN']?.replace(/,/g, '') || 0);
-            const spayTypist = parseFloat(record['SPAY-TYPIST']?.replace(/,/g, '') || 0);
-            const p = parseFloat(record['P']?.replace(/,/g, '') || 0);
-            const grossSalary = basic + da + hra + ir + sfn + spayTypist + p;
-
-            // Calculate Total Deductions: IT + PT + GSLIC + LIC + FBF
-            const it = parseFloat(record['IT']?.replace(/,/g, '') || 0);
-            const pt = parseFloat(record['PT']?.replace(/,/g, '') || 0);
-            const gslic = parseFloat(record['GSLIC']?.replace(/,/g, '') || 0);
-            const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
-            const fbf = parseFloat(record['FBF']?.replace(/,/g, '') || 0);
-            const totalDeductions = it + pt + gslic + lic + fbf;
-
-            // Net Salary = Gross Salary - Total Deductions
-            const netSalary = grossSalary - totalDeductions;
+            // Use existing calculated values from CSV
+            const grossSalary = parseFloat(record['Gross Salary']?.replace(/,/g, '') || 0);
+            const totalDeductions = parseFloat(record['Total Deductions']?.replace(/,/g, '') || 0);
+            const netSalary = parseFloat(record['Net Salary']?.replace(/,/g, '') || 0);
             
             groupedData[key].totalGross += grossSalary;
             groupedData[key].totalDeductions += totalDeductions;
@@ -600,10 +676,10 @@ class SalaryBoardApp {
             row.innerHTML = `
                 <td>${monthData.month}</td>
                 <td>${monthData.year}</td>
-                <td>${monthData.employees.size}</td>
-                <td>₹${Math.round(monthData.totalGross).toLocaleString()}</td>
-                <td>₹${Math.round(monthData.totalDeductions).toLocaleString()}</td>
-                <td>₹${Math.round(monthData.totalNet).toLocaleString()}</td>
+                <td>${this.formatIndianNumber(monthData.employees.size)}</td>
+                <td>₹${this.formatIndianNumber(Math.round(monthData.totalGross))}</td>
+                <td>₹${this.formatIndianNumber(Math.round(monthData.totalDeductions))}</td>
+                <td>₹${this.formatIndianNumber(Math.round(monthData.totalNet))}</td>
             `;
             
             row.addEventListener('click', () => {
@@ -667,7 +743,7 @@ class SalaryBoardApp {
         };
 
         periodData.forEach(record => {
-            // Calculate individual components
+            // Get individual components from CSV
             const basic = parseFloat(record['Basic']?.replace(/,/g, '') || 0);
             const da = parseFloat(record['DA']?.replace(/,/g, '') || 0);
             const hra = parseFloat(record['HRA']?.replace(/,/g, '') || 0);
@@ -681,14 +757,10 @@ class SalaryBoardApp {
             const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
             const fbf = parseFloat(record['FBF']?.replace(/,/g, '') || 0);
 
-            // Calculate Gross Salary: Basic + DA + HRA + IR + SFN + SPAY-TYPIST + P
-            const grossSalary = basic + da + hra + ir + sfn + spayTypist + p;
-            
-            // Calculate Total Deductions: IT + PT + GSLIC + LIC + FBF
-            const totalDeductions = it + pt + gslic + lic + fbf;
-            
-            // Net Salary = Gross Salary - Total Deductions
-            const netSalary = grossSalary - totalDeductions;
+            // Use existing calculated values from CSV
+            const grossSalary = parseFloat(record['Gross Salary']?.replace(/,/g, '') || 0);
+            const totalDeductions = parseFloat(record['Total Deductions']?.replace(/,/g, '') || 0);
+            const netSalary = parseFloat(record['Net Salary']?.replace(/,/g, '') || 0);
 
             // Add to totals
             metrics.totalBasic += basic;
@@ -718,69 +790,69 @@ class SalaryBoardApp {
                 <div class="details-content">
                     <h4>Detailed Breakdown for ${month} ${year}</h4>
                     <div class="details-grid">
-                        <div class="detail-item">
+                        <div class="detail-item info-employees">
                             <div class="label">Total Employees</div>
-                            <div class="value">${metrics.totalEmployees}</div>
+                            <div class="value">${this.formatIndianNumber(metrics.totalEmployees)}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-basic">
                             <div class="label">Total Basic</div>
-                            <div class="value">₹${Math.round(metrics.totalBasic).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalBasic))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-da">
                             <div class="label">Total DA</div>
-                            <div class="value">₹${Math.round(metrics.totalDA).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalDA))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-hra">
                             <div class="label">Total HRA</div>
-                            <div class="value">₹${Math.round(metrics.totalHRA).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalHRA))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">Total IR</div>
-                            <div class="value">₹${Math.round(metrics.totalIR).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalIR))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">Total SFN</div>
-                            <div class="value">₹${Math.round(metrics.totalSFN).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalSFN))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">Total SPAY-TYPIST</div>
-                            <div class="value">₹${Math.round(metrics.totalSpayTypist).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalSpayTypist))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">Total P</div>
-                            <div class="value">₹${Math.round(metrics.totalP).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalP))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item total-gross">
                             <div class="label">Total Gross</div>
-                            <div class="value">₹${Math.round(metrics.totalGross).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalGross))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-tax">
                             <div class="label">Total IT</div>
-                            <div class="value">₹${Math.round(metrics.totalIT).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalIT))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-tax">
                             <div class="label">Total PT</div>
-                            <div class="value">₹${Math.round(metrics.totalPT).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalPT))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-insurance">
                             <div class="label">Total GSLIC</div>
-                            <div class="value">₹${Math.round(metrics.totalGSLIC).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalGSLIC))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-insurance">
                             <div class="label">Total LIC</div>
-                            <div class="value">₹${Math.round(metrics.totalLIC).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalLIC))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-other">
                             <div class="label">Total FBF</div>
-                            <div class="value">₹${Math.round(metrics.totalFBF).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalFBF))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item total-deductions">
                             <div class="label">Total Deductions</div>
-                            <div class="value">₹${Math.round(metrics.totalDeductions).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalDeductions))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item total-net">
                             <div class="label">Total Net</div>
-                            <div class="value">₹${Math.round(metrics.totalNet).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalNet))}</div>
                         </div>
                     </div>
                 </div>
@@ -802,23 +874,16 @@ class SalaryBoardApp {
         // Update employee name with designation
         document.getElementById('employeeName').textContent = `${employee.name} (${employee.empNo}) - ${employee.designation}`;
 
-        // Calculate additional metrics using corrected formulas
+        // Calculate additional metrics using stored values
         let totalDeductions = 0;
         let totalIT = 0;
         let totalLIC = 0;
 
         employee.records.forEach(record => {
-            // Calculate Total Deductions: IT + PT + GSLIC + LIC + FBF
-            const it = parseFloat(record.record['IT']?.replace(/,/g, '') || 0);
-            const pt = parseFloat(record.record['PT']?.replace(/,/g, '') || 0);
-            const gslic = parseFloat(record.record['GSLIC']?.replace(/,/g, '') || 0);
-            const lic = parseFloat(record.record['LIC']?.replace(/,/g, '') || 0);
-            const fbf = parseFloat(record.record['FBF']?.replace(/,/g, '') || 0);
-            const deductions = it + pt + gslic + lic + fbf;
-
-            totalDeductions += deductions;
-            totalIT += it;
-            totalLIC += lic;
+            // Use stored values from when the record was processed
+            totalDeductions += record.totalDeductions;
+            totalIT += record.it;
+            totalLIC += record.lic;
         });
 
         // Update employee metrics (without designation card)
@@ -828,32 +893,32 @@ class SalaryBoardApp {
         const metrics = [
             {
                 title: 'Total Records',
-                value: employee.records.length.toLocaleString(),
+                value: this.formatIndianNumber(employee.records.length),
                 class: 'primary'
             },
             {
                 title: 'Total Gross Salary',
-                value: `₹${employee.totalGross.toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(employee.totalGross))}`,
                 class: 'secondary'
             },
             {
                 title: 'Total Deductions',
-                value: `₹${totalDeductions.toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalDeductions))}`,
                 class: 'accent'
             },
             {
                 title: 'Total Net Salary',
-                value: `₹${employee.totalNet.toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(employee.totalNet))}`,
                 class: 'primary'
             },
             {
                 title: 'Total IT',
-                value: `₹${totalIT.toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalIT))}`,
                 class: 'secondary'
             },
             {
                 title: 'Total LIC',
-                value: `₹${totalLIC.toLocaleString()}`,
+                value: `₹${this.formatIndianNumber(Math.round(totalLIC))}`,
                 class: 'accent'
             }
         ];
@@ -882,9 +947,9 @@ class SalaryBoardApp {
                 row.innerHTML = `
                     <td>${record.month}</td>
                     <td>${record.year}</td>
-                    <td>₹${Math.round(record.grossSalary).toLocaleString()}</td>
-                    <td>₹${Math.round(record.totalDeductions).toLocaleString()}</td>
-                    <td>₹${Math.round(record.netSalary).toLocaleString()}</td>
+                    <td>₹${this.formatIndianNumber(Math.round(record.grossSalary))}</td>
+                    <td>₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</td>
+                    <td>₹${this.formatIndianNumber(Math.round(record.netSalary))}</td>
                 `;
                 
                 row.addEventListener('click', () => {
@@ -926,37 +991,23 @@ class SalaryBoardApp {
         const recordKey = `${record.month}-${record.year}`;
         const employee = this.processedData.employees[this.currentEmployee];
         
-        // Extract detailed salary components using corrected formulas
-        const salaryData = record.record;
-        const basic = parseFloat(salaryData['Basic']?.replace(/,/g, '') || 0);
-        const da = parseFloat(salaryData['DA']?.replace(/,/g, '') || 0);
-        const hra = parseFloat(salaryData['HRA']?.replace(/,/g, '') || 0);
-        const ir = parseFloat(salaryData['IR']?.replace(/,/g, '') || 0);
-        const sfn = parseFloat(salaryData['SFN']?.replace(/,/g, '') || 0);
-        const spayTypist = parseFloat(salaryData['SPAY-TYPIST']?.replace(/,/g, '') || 0);
-        const p = parseFloat(salaryData['P']?.replace(/,/g, '') || 0);
-        const it = parseFloat(salaryData['IT']?.replace(/,/g, '') || 0);
-        const pt = parseFloat(salaryData['PT']?.replace(/,/g, '') || 0);
-        const gslic = parseFloat(salaryData['GSLIC']?.replace(/,/g, '') || 0);
-        const lic = parseFloat(salaryData['LIC']?.replace(/,/g, '') || 0);
-        const fbf = parseFloat(salaryData['FBF']?.replace(/,/g, '') || 0);
-
+        // Use stored values from the record
         const metrics = {
-            basic,
-            da,
-            hra,
-            ir,
-            sfn,
-            spayTypist,
-            p,
-            gross: basic + da + hra + ir + sfn + spayTypist + p, // Calculated Gross
-            it,
-            pt,
-            gslic,
-            lic,
-            fbf,
-            totalDeductions: it + pt + gslic + lic + fbf, // Calculated Total Deductions
-            net: (basic + da + hra + ir + sfn + spayTypist + p) - (it + pt + gslic + lic + fbf) // Calculated Net
+            basic: record.basic,
+            da: record.da,
+            hra: record.hra,
+            ir: record.ir,
+            sfn: record.sfn,
+            spayTypist: record.spayTypist,
+            p: record.p,
+            gross: record.grossSalary,
+            it: record.it,
+            pt: record.pt,
+            gslic: record.gslic,
+            lic: record.lic,
+            fbf: record.fbf,
+            totalDeductions: record.totalDeductions,
+            net: record.netSalary
         };
 
         const mainRow = document.querySelector(`tr[data-record-key="${recordKey}"]`);
@@ -969,69 +1020,69 @@ class SalaryBoardApp {
                 <div class="details-content">
                     <h4>Detailed Breakdown for ${employee.name} - ${record.month} ${record.year}</h4>
                     <div class="details-grid">
-                        <div class="detail-item">
+                        <div class="detail-item info-designation">
                             <div class="label">Designation</div>
                             <div class="value">${employee.designation}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-basic">
                             <div class="label">Basic Salary</div>
-                            <div class="value">₹${Math.round(metrics.basic).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.basic))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-da">
                             <div class="label">DA</div>
-                            <div class="value">₹${Math.round(metrics.da).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.da))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-hra">
                             <div class="label">HRA</div>
-                            <div class="value">₹${Math.round(metrics.hra).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.hra))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">IR</div>
-                            <div class="value">₹${Math.round(metrics.ir).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.ir))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">SFN</div>
-                            <div class="value">₹${Math.round(metrics.sfn).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.sfn))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">SPAY-TYPIST</div>
-                            <div class="value">₹${Math.round(metrics.spayTypist).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.spayTypist))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item allowance-other">
                             <div class="label">P</div>
-                            <div class="value">₹${Math.round(metrics.p).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.p))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item total-gross">
                             <div class="label">Gross Salary</div>
-                            <div class="value">₹${Math.round(metrics.gross).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.gross))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-tax">
                             <div class="label">IT</div>
-                            <div class="value">₹${Math.round(metrics.it).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.it))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-tax">
                             <div class="label">PT</div>
-                            <div class="value">₹${Math.round(metrics.pt).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.pt))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-insurance">
                             <div class="label">GSLIC</div>
-                            <div class="value">₹${Math.round(metrics.gslic).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.gslic))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-insurance">
                             <div class="label">LIC</div>
-                            <div class="value">₹${Math.round(metrics.lic).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.lic))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item deduction-other">
                             <div class="label">FBF</div>
-                            <div class="value">₹${Math.round(metrics.fbf).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.fbf))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item total-deductions">
                             <div class="label">Total Deductions</div>
-                            <div class="value">₹${Math.round(metrics.totalDeductions).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalDeductions))}</div>
                         </div>
-                        <div class="detail-item">
+                        <div class="detail-item total-net">
                             <div class="label">Net Salary</div>
-                            <div class="value">₹${Math.round(metrics.net).toLocaleString()}</div>
+                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.net))}</div>
                         </div>
                     </div>
                 </div>
@@ -1048,6 +1099,34 @@ class SalaryBoardApp {
             'September': 9, 'October': 10, 'November': 11, 'December': 12
         };
         return months[monthName] || 0;
+    }
+
+    formatIndianNumber(number) {
+        if (number === null || number === undefined || isNaN(number)) return '0';
+        
+        // Convert to string and handle decimal places
+        const parts = Math.abs(number).toString().split('.');
+        const integerPart = parts[0];
+        const decimalPart = parts[1] ? '.' + parts[1] : '';
+        
+        // Indian number formatting
+        let formatted = '';
+        const length = integerPart.length;
+        
+        if (length <= 3) {
+            formatted = integerPart;
+        } else if (length <= 5) {
+            formatted = integerPart.slice(0, length - 3) + ',' + integerPart.slice(-3);
+        } else if (length <= 7) {
+            formatted = integerPart.slice(0, length - 5) + ',' + integerPart.slice(length - 5, length - 3) + ',' + integerPart.slice(-3);
+        } else if (length <= 9) {
+            formatted = integerPart.slice(0, length - 7) + ',' + integerPart.slice(length - 7, length - 5) + ',' + integerPart.slice(length - 5, length - 3) + ',' + integerPart.slice(-3);
+        } else {
+            // For very large numbers, continue the pattern
+            formatted = integerPart.slice(0, length - 9) + ',' + integerPart.slice(length - 9, length - 7) + ',' + integerPart.slice(length - 7, length - 5) + ',' + integerPart.slice(length - 5, length - 3) + ',' + integerPart.slice(-3);
+        }
+        
+        return (number < 0 ? '-' : '') + formatted + decimalPart;
     }
 
     showLoading() {
