@@ -365,6 +365,8 @@ body {
   border: 1px solid var(--border-color);
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 .consolidated-table {
@@ -746,13 +748,47 @@ tr:hover {
     grid-template-columns: repeat(2, 1fr);
   }
   
+  .data-table-container {
+    margin: 0 -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    position: relative;
+  }
+  
   .consolidated-table {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    min-width: 700px;
   }
   
   .consolidated-table th,
   .consolidated-table td {
-    padding: 0.5rem;
+    padding: 0.5rem 0.3rem;
+    white-space: nowrap;
+  }
+  
+  .consolidated-table th:first-child,
+  .consolidated-table td:first-child {
+    padding-left: 1rem;
+    position: sticky;
+    left: 0;
+    background: var(--surface-color);
+    z-index: 1;
+  }
+  
+  .consolidated-table th:first-child {
+    background: var(--background-color);
+  }
+  
+  .data-table-container::after {
+    content: '← Swipe to view more →';
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    opacity: 0.7;
   }
   
   .details-grid {
