@@ -496,6 +496,174 @@ body {
   font-size: 0.95rem;
 }
 
+/* Breakdown Comprehensive Card Styles */
+.breakdown-comprehensive-card {
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  margin: 1rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.breakdown-comprehensive-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-accent);
+}
+
+.breakdown-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.breakdown-header h4 {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.breakdown-header .breakdown-info {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.breakdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.breakdown-summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.breakdown-summary-item {
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.breakdown-summary-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.breakdown-summary-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.breakdown-summary-item.primary::before {
+  background: var(--gradient-primary);
+}
+
+.breakdown-summary-item.secondary::before {
+  background: var(--gradient-secondary);
+}
+
+.breakdown-summary-item.accent::before {
+  background: var(--gradient-accent);
+}
+
+.breakdown-summary-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.breakdown-summary-value {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.breakdown-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.breakdown-details-section {
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+.breakdown-details-section h5 {
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.breakdown-details-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.breakdown-details-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.breakdown-details-item:last-child {
+  border-bottom: none;
+  border-top: 2px solid var(--accent-color);
+  padding-top: 0.6rem;
+  font-weight: 600;
+}
+
+.breakdown-details-item:hover {
+  background: var(--surface-color);
+  border-radius: 4px;
+  padding: 0.4rem 0.5rem;
+  margin: 0 -0.5rem;
+}
+
+.breakdown-details-label {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.breakdown-details-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .period-display {
   background: var(--surface-color);
   border-radius: var(--border-radius);
@@ -939,6 +1107,37 @@ tr:hover {
     padding: 1rem;
   }
   
+  .breakdown-comprehensive-card {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  .breakdown-header h4 {
+    font-size: 1.1rem;
+  }
+  
+  .breakdown-summary-section {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .breakdown-summary-item {
+    padding: 0.75rem;
+  }
+  
+  .breakdown-summary-value {
+    font-size: 1.1rem;
+  }
+  
+  .breakdown-details-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .breakdown-details-section {
+    padding: 0.75rem;
+  }
+  
   .data-table-container {
     margin: 0 -1rem;
     border-radius: 0;
@@ -1043,6 +1242,23 @@ tr:hover {
   
   .breakdown-section h4 {
     font-size: 1rem;
+  }
+  
+  .breakdown-comprehensive-card {
+    padding: 0.75rem;
+    margin: 0.25rem 0;
+  }
+  
+  .breakdown-header h4 {
+    font-size: 1rem;
+  }
+  
+  .breakdown-summary-value {
+    font-size: 1rem;
+  }
+  
+  .breakdown-details-section h5 {
+    font-size: 0.9rem;
   }
   
   .summary-charts {

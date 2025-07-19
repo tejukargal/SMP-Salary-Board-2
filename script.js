@@ -923,72 +923,72 @@ class SalaryBoardApp {
         
         detailsRow.innerHTML = `
             <td colspan="6">
-                <div class="details-content">
-                    <h4>Detailed Breakdown for ${month} ${year}</h4>
-                    <div class="details-grid">
-                        <div class="detail-item info-employees">
-                            <div class="label">Total Employees</div>
-                            <div class="value">${this.formatIndianNumber(metrics.totalEmployees)}</div>
+                <div class="breakdown-comprehensive-card">
+                    <div class="breakdown-header">
+                        <h4>Detailed Breakdown for ${month} ${year}</h4>
+                        <div class="breakdown-info">${this.formatIndianNumber(metrics.totalEmployees)} Employees</div>
+                    </div>
+                    
+                    <div class="breakdown-content">
+                        <div class="breakdown-summary-section">
+                            <div class="breakdown-summary-item primary">
+                                <div class="breakdown-summary-label">Total Net Salary</div>
+                                <div class="breakdown-summary-value">₹${this.formatIndianNumber(Math.round(metrics.totalNet))}</div>
+                            </div>
+                            <div class="breakdown-summary-item secondary">
+                                <div class="breakdown-summary-label">Total Gross Salary</div>
+                                <div class="breakdown-summary-value">₹${this.formatIndianNumber(Math.round(metrics.totalGross))}</div>
+                            </div>
+                            <div class="breakdown-summary-item accent">
+                                <div class="breakdown-summary-label">Total Deductions</div>
+                                <div class="breakdown-summary-value">₹${this.formatIndianNumber(Math.round(metrics.totalDeductions))}</div>
+                            </div>
                         </div>
-                        <div class="detail-item allowance-basic">
-                            <div class="label">Total Basic</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalBasic))}</div>
-                        </div>
-                        <div class="detail-item allowance-da">
-                            <div class="label">Total DA</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalDA))}</div>
-                        </div>
-                        <div class="detail-item allowance-hra">
-                            <div class="label">Total HRA</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalHRA))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">Total IR</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalIR))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">Total SFN</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalSFN))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">Total SPAY-TYPIST</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalSpayTypist))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">Total P</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalP))}</div>
-                        </div>
-                        <div class="detail-item total-gross">
-                            <div class="label">Total Gross</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalGross))}</div>
-                        </div>
-                        <div class="detail-item deduction-tax">
-                            <div class="label">Total IT</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalIT))}</div>
-                        </div>
-                        <div class="detail-item deduction-tax">
-                            <div class="label">Total PT</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalPT))}</div>
-                        </div>
-                        <div class="detail-item deduction-insurance">
-                            <div class="label">Total GSLIC</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalGSLIC))}</div>
-                        </div>
-                        <div class="detail-item deduction-insurance">
-                            <div class="label">Total LIC</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalLIC))}</div>
-                        </div>
-                        <div class="detail-item deduction-other">
-                            <div class="label">Total FBF</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalFBF))}</div>
-                        </div>
-                        <div class="detail-item total-deductions">
-                            <div class="label">Total Deductions</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalDeductions))}</div>
-                        </div>
-                        <div class="detail-item total-net">
-                            <div class="label">Total Net</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(metrics.totalNet))}</div>
+                        
+                        <div class="breakdown-details-grid">
+                            <div class="breakdown-details-section">
+                                <h5>Allowances Breakdown</h5>
+                                <div class="breakdown-details-items">
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Basic Salary</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalBasic))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Dearness Allowance</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalDA))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">House Rent Allowance</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalHRA))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Other Allowances</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalIR + metrics.totalSFN + metrics.totalSpayTypist + metrics.totalP))}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="breakdown-details-section">
+                                <h5>Deductions Breakdown</h5>
+                                <div class="breakdown-details-items">
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Income Tax</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalIT))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Professional Tax</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalPT))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Insurance (LIC + GSLIC)</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalLIC + metrics.totalGSLIC))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Other Deductions</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(metrics.totalFBF))}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1134,72 +1134,72 @@ class SalaryBoardApp {
         
         detailsRow.innerHTML = `
             <td colspan="5">
-                <div class="details-content">
-                    <h4>Detailed Breakdown for ${employee.name} - ${record.month} ${record.year}</h4>
-                    <div class="details-grid">
-                        <div class="detail-item info-designation">
-                            <div class="label">Designation</div>
-                            <div class="value">${this.abbreviateDesignation(employee.designation)}</div>
+                <div class="breakdown-comprehensive-card">
+                    <div class="breakdown-header">
+                        <h4>Detailed Breakdown for ${employee.name} - ${record.month} ${record.year}</h4>
+                        <div class="breakdown-info">${this.abbreviateDesignation(employee.designation)}</div>
+                    </div>
+                    
+                    <div class="breakdown-content">
+                        <div class="breakdown-summary-section">
+                            <div class="breakdown-summary-item primary">
+                                <div class="breakdown-summary-label">Net Salary</div>
+                                <div class="breakdown-summary-value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</div>
+                            </div>
+                            <div class="breakdown-summary-item secondary">
+                                <div class="breakdown-summary-label">Gross Salary</div>
+                                <div class="breakdown-summary-value">₹${this.formatIndianNumber(Math.round(record.grossSalary))}</div>
+                            </div>
+                            <div class="breakdown-summary-item accent">
+                                <div class="breakdown-summary-label">Total Deductions</div>
+                                <div class="breakdown-summary-value">₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</div>
+                            </div>
                         </div>
-                        <div class="detail-item allowance-basic">
-                            <div class="label">Basic Salary</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.basic))}</div>
-                        </div>
-                        <div class="detail-item allowance-da">
-                            <div class="label">DA</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.da))}</div>
-                        </div>
-                        <div class="detail-item allowance-hra">
-                            <div class="label">HRA</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.hra))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">IR</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.ir))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">SFN</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.sfn))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">SPAY-TYPIST</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.spayTypist))}</div>
-                        </div>
-                        <div class="detail-item allowance-other">
-                            <div class="label">P</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.p))}</div>
-                        </div>
-                        <div class="detail-item total-gross">
-                            <div class="label">Gross Salary</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.grossSalary))}</div>
-                        </div>
-                        <div class="detail-item deduction-tax">
-                            <div class="label">IT</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.it))}</div>
-                        </div>
-                        <div class="detail-item deduction-tax">
-                            <div class="label">PT</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.pt))}</div>
-                        </div>
-                        <div class="detail-item deduction-insurance">
-                            <div class="label">GSLIC</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.gslic))}</div>
-                        </div>
-                        <div class="detail-item deduction-insurance">
-                            <div class="label">LIC</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.lic))}</div>
-                        </div>
-                        <div class="detail-item deduction-other">
-                            <div class="label">FBF</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.fbf))}</div>
-                        </div>
-                        <div class="detail-item total-deductions">
-                            <div class="label">Total Deductions</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</div>
-                        </div>
-                        <div class="detail-item total-net">
-                            <div class="label">Net Salary</div>
-                            <div class="value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</div>
+                        
+                        <div class="breakdown-details-grid">
+                            <div class="breakdown-details-section">
+                                <h5>Allowances Breakdown</h5>
+                                <div class="breakdown-details-items">
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Basic Salary</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.basic))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Dearness Allowance</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.da))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">House Rent Allowance</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.hra))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Other Allowances</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.ir + record.sfn + record.spayTypist + record.p))}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="breakdown-details-section">
+                                <h5>Deductions Breakdown</h5>
+                                <div class="breakdown-details-items">
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Income Tax</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.it))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Professional Tax</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.pt))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Insurance (LIC + GSLIC)</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.lic + record.gslic))}</span>
+                                    </div>
+                                    <div class="breakdown-details-item">
+                                        <span class="breakdown-details-label">Other Deductions</span>
+                                        <span class="breakdown-details-value">₹${this.formatIndianNumber(Math.round(record.fbf))}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
