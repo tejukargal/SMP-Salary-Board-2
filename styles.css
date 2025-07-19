@@ -327,6 +327,175 @@ body {
   color: var(--error-color);
 }
 
+/* Comprehensive Metric Card Styles */
+.comprehensive-metric-card {
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.comprehensive-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.comprehensive-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.comprehensive-header h3 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.comprehensive-header .period-info {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.comprehensive-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.summary-item {
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: center;
+  border: 2px solid var(--border-color);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.summary-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.summary-item.primary::before {
+  background: var(--gradient-primary);
+}
+
+.summary-item.secondary::before {
+  background: var(--gradient-secondary);
+}
+
+.summary-item.accent::before {
+  background: var(--gradient-accent);
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.breakdown-section {
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.breakdown-section h4 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.breakdown-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.breakdown-item:last-child {
+  border-bottom: none;
+  border-top: 2px solid var(--accent-color);
+  padding-top: 0.75rem;
+  font-weight: 600;
+}
+
+.breakdown-item:hover {
+  background: var(--surface-color);
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin: 0 -0.5rem;
+}
+
+.breakdown-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.breakdown-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
 .period-display {
   background: var(--surface-color);
   border-radius: var(--border-radius);
@@ -737,7 +906,37 @@ tr:hover {
   }
   
   .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+  }
+  
+  .comprehensive-metric-card {
+    padding: 1.5rem;
+  }
+  
+  .comprehensive-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .summary-section {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .summary-item {
+    padding: 1rem;
+  }
+  
+  .summary-value {
+    font-size: 1.5rem;
+  }
+  
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .breakdown-section {
+    padding: 1rem;
   }
   
   .data-table-container {
@@ -828,6 +1027,22 @@ tr:hover {
   
   .metric-value {
     font-size: 1.25rem;
+  }
+  
+  .comprehensive-metric-card {
+    padding: 1rem;
+  }
+  
+  .comprehensive-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .summary-value {
+    font-size: 1.3rem;
+  }
+  
+  .breakdown-section h4 {
+    font-size: 1rem;
   }
   
   .summary-charts {

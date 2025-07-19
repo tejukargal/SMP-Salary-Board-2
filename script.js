@@ -577,6 +577,9 @@ class SalaryBoardApp {
         let totalDeductions = 0;
         let totalIT = 0;
         let totalLIC = 0;
+        let totalBasic = 0;
+        let totalDA = 0;
+        let totalHRA = 0;
 
         filteredData.forEach(record => {
             // Use existing calculated values from CSV
@@ -584,61 +587,38 @@ class SalaryBoardApp {
             const deductions = parseFloat(record['Total Deductions']?.replace(/,/g, '') || 0);
             const netSalary = parseFloat(record['Net Salary']?.replace(/,/g, '') || 0);
 
-            // Individual components for summary metrics
+            // Individual components for comprehensive metrics
             const it = parseFloat(record['IT']?.replace(/,/g, '') || 0);
             const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
+            const basic = parseFloat(record['Basic']?.replace(/,/g, '') || 0);
+            const da = parseFloat(record['DA']?.replace(/,/g, '') || 0);
+            const hra = parseFloat(record['HRA']?.replace(/,/g, '') || 0);
 
             totalGrossSalary += grossSalary;
             totalDeductions += deductions;
             totalNetSalary += netSalary;
             totalIT += it;
             totalLIC += lic;
+            totalBasic += basic;
+            totalDA += da;
+            totalHRA += hra;
         });
 
-        // Create metric cards
-        const metrics = [
-            {
-                title: 'Total Employees',
-                value: this.formatIndianNumber(uniqueEmployees),
-                change: null,
-                class: 'primary'
-            },
-            {
-                title: 'Total Gross Salary',
-                value: `₹${this.formatIndianNumber(Math.round(totalGrossSalary))}`,
-                change: null,
-                class: 'secondary'
-            },
-            {
-                title: 'Total Deductions',
-                value: `₹${this.formatIndianNumber(Math.round(totalDeductions))}`,
-                change: null,
-                class: 'accent'
-            },
-            {
-                title: 'Total Net Salary',
-                value: `₹${this.formatIndianNumber(Math.round(totalNetSalary))}`,
-                change: null,
-                class: 'primary'
-            },
-            {
-                title: 'Total IT',
-                value: `₹${this.formatIndianNumber(Math.round(totalIT))}`,
-                change: null,
-                class: 'secondary'
-            },
-            {
-                title: 'Total LIC',
-                value: `₹${this.formatIndianNumber(Math.round(totalLIC))}`,
-                change: null,
-                class: 'accent'
-            }
-        ];
-
-        metrics.forEach(metric => {
-            const card = this.createMetricCard(metric);
-            metricsGrid.appendChild(card);
+        // Create single comprehensive metric card
+        const comprehensiveCard = this.createComprehensiveMetricCard({
+            employees: uniqueEmployees,
+            totalRecords: totalRecords,
+            grossSalary: totalGrossSalary,
+            deductions: totalDeductions,
+            netSalary: totalNetSalary,
+            it: totalIT,
+            lic: totalLIC,
+            basic: totalBasic,
+            da: totalDA,
+            hra: totalHRA
         });
+
+        metricsGrid.appendChild(comprehensiveCard);
 
         // Update period display
         this.updatePeriodDisplay(filteredData, selectedYear, selectedMonth);
@@ -655,6 +635,75 @@ class SalaryBoardApp {
                 <i class="fas fa-arrow-${metric.change > 0 ? 'up' : 'down'}"></i>
                 ${Math.abs(metric.change)}%
             </div>` : ''}
+        `;
+        
+        return card;
+    }
+
+    createComprehensiveMetricCard(data) {
+        const card = document.createElement('div');
+        card.className = 'comprehensive-metric-card';
+        
+        card.innerHTML = `
+            <div class="comprehensive-header">
+                <h3>Salary Summary Overview</h3>
+                <div class="period-info">${data.employees} Employees • ${data.totalRecords} Records</div>
+            </div>
+            
+            <div class="comprehensive-content">
+                <div class="summary-section">
+                    <div class="summary-item primary">
+                        <div class="summary-label">Total Net Salary</div>
+                        <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.netSalary))}</div>
+                    </div>
+                    <div class="summary-item secondary">
+                        <div class="summary-label">Total Gross Salary</div>
+                        <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.grossSalary))}</div>
+                    </div>
+                    <div class="summary-item accent">
+                        <div class="summary-label">Total Deductions</div>
+                        <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.deductions))}</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown-grid">
+                    <div class="breakdown-section">
+                        <h4>Allowances</h4>
+                        <div class="breakdown-items">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Basic</span>
+                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.basic))}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">DA</span>
+                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.da))}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">HRA</span>
+                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.hra))}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-section">
+                        <h4>Key Deductions</h4>
+                        <div class="breakdown-items">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Income Tax</span>
+                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.it))}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">LIC</span>
+                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.lic))}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Total Deducted</span>
+                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.deductions))}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
         
         return card;
