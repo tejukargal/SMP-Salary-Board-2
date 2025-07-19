@@ -427,19 +427,6 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.2);
 }
 
-.consolidated-table tbody tr[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  background: var(--text-primary);
-  color: var(--surface-color);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  z-index: 1000;
-  white-space: nowrap;
-  margin-left: 10px;
-  pointer-events: none;
-}
 
 .view-details-btn {
   padding: 0.5rem 1rem;
