@@ -384,7 +384,7 @@ body {
   border-bottom: 2px solid var(--border-color);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 5;
 }
 
 .consolidated-table td {
@@ -393,18 +393,6 @@ body {
   color: var(--text-primary);
 }
 
-.consolidated-table th:first-child,
-.consolidated-table td:first-child {
-  position: sticky;
-  left: 0;
-  background: var(--surface-color);
-  z-index: 5;
-}
-
-.consolidated-table th:first-child {
-  background: var(--background-color);
-  z-index: 15;
-}
 
 .consolidated-table tbody tr {
   transition: var(--transition);
@@ -773,15 +761,6 @@ tr:hover {
   .consolidated-table th:first-child,
   .consolidated-table td:first-child {
     padding-left: 1rem;
-    position: sticky;
-    left: 0;
-    background: var(--surface-color);
-    z-index: 5;
-  }
-  
-  .consolidated-table th:first-child {
-    background: var(--background-color);
-    z-index: 11;
   }
   
   .data-table-container::after {
