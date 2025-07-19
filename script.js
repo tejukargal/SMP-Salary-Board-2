@@ -575,11 +575,22 @@ class SalaryBoardApp {
         let totalNetSalary = 0;
         let totalGrossSalary = 0;
         let totalDeductions = 0;
-        let totalIT = 0;
-        let totalLIC = 0;
+        
+        // Individual allowance components
         let totalBasic = 0;
         let totalDA = 0;
         let totalHRA = 0;
+        let totalIR = 0;
+        let totalSFN = 0;
+        let totalSpayTypist = 0;
+        let totalP = 0;
+        
+        // Individual deduction components
+        let totalIT = 0;
+        let totalPT = 0;
+        let totalGSLIC = 0;
+        let totalLIC = 0;
+        let totalFBF = 0;
 
         filteredData.forEach(record => {
             // Use existing calculated values from CSV
@@ -587,35 +598,64 @@ class SalaryBoardApp {
             const deductions = parseFloat(record['Total Deductions']?.replace(/,/g, '') || 0);
             const netSalary = parseFloat(record['Net Salary']?.replace(/,/g, '') || 0);
 
-            // Individual components for comprehensive metrics
-            const it = parseFloat(record['IT']?.replace(/,/g, '') || 0);
-            const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
+            // Individual allowance components
             const basic = parseFloat(record['Basic']?.replace(/,/g, '') || 0);
             const da = parseFloat(record['DA']?.replace(/,/g, '') || 0);
             const hra = parseFloat(record['HRA']?.replace(/,/g, '') || 0);
+            const ir = parseFloat(record['IR']?.replace(/,/g, '') || 0);
+            const sfn = parseFloat(record['SFN']?.replace(/,/g, '') || 0);
+            const spayTypist = parseFloat(record['SPAY-TYPIST']?.replace(/,/g, '') || 0);
+            const p = parseFloat(record['P']?.replace(/,/g, '') || 0);
+            
+            // Individual deduction components
+            const it = parseFloat(record['IT']?.replace(/,/g, '') || 0);
+            const pt = parseFloat(record['PT']?.replace(/,/g, '') || 0);
+            const gslic = parseFloat(record['GSLIC']?.replace(/,/g, '') || 0);
+            const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
+            const fbf = parseFloat(record['FBF']?.replace(/,/g, '') || 0);
 
             totalGrossSalary += grossSalary;
             totalDeductions += deductions;
             totalNetSalary += netSalary;
-            totalIT += it;
-            totalLIC += lic;
+            
+            // Add allowances
             totalBasic += basic;
             totalDA += da;
             totalHRA += hra;
+            totalIR += ir;
+            totalSFN += sfn;
+            totalSpayTypist += spayTypist;
+            totalP += p;
+            
+            // Add deductions
+            totalIT += it;
+            totalPT += pt;
+            totalGSLIC += gslic;
+            totalLIC += lic;
+            totalFBF += fbf;
         });
 
-        // Create single comprehensive metric card
+        // Create single comprehensive metric card with compact individual cards
         const comprehensiveCard = this.createComprehensiveMetricCard({
             employees: uniqueEmployees,
             totalRecords: totalRecords,
             grossSalary: totalGrossSalary,
             deductions: totalDeductions,
             netSalary: totalNetSalary,
-            it: totalIT,
-            lic: totalLIC,
+            // Allowances
             basic: totalBasic,
             da: totalDA,
-            hra: totalHRA
+            hra: totalHRA,
+            ir: totalIR,
+            sfn: totalSFN,
+            spayTypist: totalSpayTypist,
+            p: totalP,
+            // Deductions
+            it: totalIT,
+            pt: totalPT,
+            gslic: totalGSLIC,
+            lic: totalLIC,
+            fbf: totalFBF
         });
 
         metricsGrid.appendChild(comprehensiveCard);
@@ -656,57 +696,264 @@ class SalaryBoardApp {
                         <div class="summary-label">Total Net Salary</div>
                         <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.netSalary))}</div>
                     </div>
-                    <div class="summary-item secondary">
+                    <div class="summary-item secondary clickable-breakdown" data-breakdown-type="allowances">
                         <div class="summary-label">Total Gross Salary</div>
                         <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.grossSalary))}</div>
+                        <div class="breakdown-hint">Click to view allowances breakdown</div>
                     </div>
-                    <div class="summary-item accent">
+                    <div class="summary-item accent clickable-breakdown" data-breakdown-type="deductions">
                         <div class="summary-label">Total Deductions</div>
                         <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.deductions))}</div>
-                    </div>
-                </div>
-                
-                <div class="breakdown-grid">
-                    <div class="breakdown-section">
-                        <h4>Allowances</h4>
-                        <div class="breakdown-items">
-                            <div class="breakdown-item">
-                                <span class="breakdown-label">Basic</span>
-                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.basic))}</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span class="breakdown-label">DA</span>
-                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.da))}</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span class="breakdown-label">HRA</span>
-                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.hra))}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="breakdown-section">
-                        <h4>Key Deductions</h4>
-                        <div class="breakdown-items">
-                            <div class="breakdown-item">
-                                <span class="breakdown-label">Income Tax</span>
-                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.it))}</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span class="breakdown-label">LIC</span>
-                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.lic))}</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span class="breakdown-label">Total Deducted</span>
-                                <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(data.deductions))}</span>
-                            </div>
-                        </div>
+                        <div class="breakdown-hint">Click to view deductions breakdown</div>
                     </div>
                 </div>
             </div>
         `;
         
+        // Add click event listeners for breakdown functionality
+        card.addEventListener('click', (e) => {
+            const breakdownCard = e.target.closest('.clickable-breakdown');
+            if (breakdownCard) {
+                const breakdownType = breakdownCard.dataset.breakdownType;
+                this.showDashboardBreakdown(breakdownType, data);
+            }
+        });
+        
         return card;
+    }
+
+    showDashboardBreakdown(breakdownType, data) {
+        // Create breakdown modal similar to monthly breakdown
+        const modal = document.createElement('div');
+        modal.className = 'breakdown-modal';
+        
+        let title, items;
+        if (breakdownType === 'allowances') {
+            title = 'Allowances Breakdown';
+            items = [
+                { label: 'Basic', value: data.basic },
+                { label: 'DA', value: data.da },
+                { label: 'HRA', value: data.hra },
+                { label: 'IR', value: data.ir },
+                { label: 'SFN', value: data.sfn },
+                { label: 'SPAY', value: data.spayTypist },
+                { label: 'P', value: data.p }
+            ];
+        } else {
+            title = 'Deductions Breakdown';
+            items = [
+                { label: 'IT', value: data.it },
+                { label: 'PT', value: data.pt },
+                { label: 'GSLIC', value: data.gslic },
+                { label: 'LIC', value: data.lic },
+                { label: 'FBF', value: data.fbf }
+            ];
+        }
+
+        modal.innerHTML = `
+            <div class="breakdown-content">
+                <div class="breakdown-header">
+                    <h3>${title}</h3>
+                    <button class="close-breakdown" aria-label="Close">&times;</button>
+                </div>
+                
+                <div class="breakdown-cards">
+                    <div class="breakdown-summary-card">
+                        <div class="summary-title">Total ${breakdownType === 'allowances' ? 'Gross Salary' : 'Deductions'}</div>
+                        <div class="summary-metrics">
+                            <div class="summary-metric ${breakdownType === 'allowances' ? 'gross-summary' : 'deductions-summary'}">
+                                <div class="metric-label">${breakdownType === 'allowances' ? 'Gross' : 'Deductions'}</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(breakdownType === 'allowances' ? data.grossSalary : data.deductions))}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-details">
+                        <div class="detail-section">
+                            <h4>${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
+                            <div class="detail-grid">
+                                ${items.map(item => `
+                                    <div class="detail-item">
+                                        <span class="detail-label">${item.label}</span>
+                                        <span class="detail-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-footer">
+                        <button class="close-breakdown-footer" type="button">
+                            <i class="fas fa-times"></i>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="breakdown-overlay"></div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal functionality
+        const closeBtn = modal.querySelector('.close-breakdown');
+        const closeFooterBtn = modal.querySelector('.close-breakdown-footer');
+        const overlay = modal.querySelector('.breakdown-overlay');
+        
+        const closeModal = () => {
+            document.body.removeChild(modal);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        closeFooterBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        // Close on Escape key
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+    }
+
+    createEmployeeComprehensiveMetricCard(data) {
+        const card = document.createElement('div');
+        card.className = 'comprehensive-metric-card';
+        
+        card.innerHTML = `
+            <div class="comprehensive-header">
+                <h3>${data.employee.name} - Summary Overview</h3>
+                <div class="period-info">${this.abbreviateDesignation(data.employee.designation)} • ${data.totalRecords} Records</div>
+            </div>
+            
+            <div class="comprehensive-content">
+                <div class="summary-section">
+                    <div class="summary-item primary">
+                        <div class="summary-label">Total Net Salary</div>
+                        <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.netSalary))}</div>
+                    </div>
+                    <div class="summary-item secondary clickable-breakdown" data-breakdown-type="allowances">
+                        <div class="summary-label">Total Gross Salary</div>
+                        <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.grossSalary))}</div>
+                        <div class="breakdown-hint">Click to view allowances breakdown</div>
+                    </div>
+                    <div class="summary-item accent clickable-breakdown" data-breakdown-type="deductions">
+                        <div class="summary-label">Total Deductions</div>
+                        <div class="summary-value">₹${this.formatIndianNumber(Math.round(data.deductions))}</div>
+                        <div class="breakdown-hint">Click to view deductions breakdown</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add click event listeners for breakdown functionality
+        card.addEventListener('click', (e) => {
+            const breakdownCard = e.target.closest('.clickable-breakdown');
+            if (breakdownCard) {
+                const breakdownType = breakdownCard.dataset.breakdownType;
+                this.showEmployeeBreakdown(breakdownType, data);
+            }
+        });
+        
+        return card;
+    }
+
+    showEmployeeBreakdown(breakdownType, data) {
+        // Create breakdown modal similar to dashboard breakdown
+        const modal = document.createElement('div');
+        modal.className = 'breakdown-modal';
+        
+        let title, items;
+        if (breakdownType === 'allowances') {
+            title = `${data.employee.name} - Allowances Breakdown`;
+            items = [
+                { label: 'Basic', value: data.basic },
+                { label: 'DA', value: data.da },
+                { label: 'HRA', value: data.hra },
+                { label: 'IR', value: data.ir },
+                { label: 'SFN', value: data.sfn },
+                { label: 'SPAY', value: data.spayTypist },
+                { label: 'P', value: data.p }
+            ];
+        } else {
+            title = `${data.employee.name} - Deductions Breakdown`;
+            items = [
+                { label: 'IT', value: data.it },
+                { label: 'PT', value: data.pt },
+                { label: 'GSLIC', value: data.gslic },
+                { label: 'LIC', value: data.lic },
+                { label: 'FBF', value: data.fbf }
+            ];
+        }
+
+        modal.innerHTML = `
+            <div class="breakdown-content">
+                <div class="breakdown-header">
+                    <h3>${title}</h3>
+                    <button class="close-breakdown" aria-label="Close">&times;</button>
+                </div>
+                
+                <div class="breakdown-cards">
+                    <div class="breakdown-summary-card">
+                        <div class="summary-title">Total ${breakdownType === 'allowances' ? 'Gross Salary' : 'Deductions'}</div>
+                        <div class="summary-metrics">
+                            <div class="summary-metric ${breakdownType === 'allowances' ? 'gross-summary' : 'deductions-summary'}">
+                                <div class="metric-label">${breakdownType === 'allowances' ? 'Gross' : 'Deductions'}</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(breakdownType === 'allowances' ? data.grossSalary : data.deductions))}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-details">
+                        <div class="detail-section">
+                            <h4>${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
+                            <div class="detail-grid">
+                                ${items.map(item => `
+                                    <div class="detail-item">
+                                        <span class="detail-label">${item.label}</span>
+                                        <span class="detail-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-footer">
+                        <button class="close-breakdown-footer" type="button">
+                            <i class="fas fa-times"></i>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="breakdown-overlay"></div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal functionality
+        const closeBtn = modal.querySelector('.close-breakdown');
+        const closeFooterBtn = modal.querySelector('.close-breakdown-footer');
+        const overlay = modal.querySelector('.breakdown-overlay');
+        
+        const closeModal = () => {
+            document.body.removeChild(modal);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        closeFooterBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        // Close on Escape key
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
     }
 
     updatePeriodDisplay(filteredData, selectedYear, selectedMonth) {
@@ -750,13 +997,13 @@ class SalaryBoardApp {
     }
 
     renderCharts(selectedYear, selectedMonth) {
-        // Replace charts with consolidated data table
-        this.renderConsolidatedData(selectedYear, selectedMonth);
+        // Replace charts with compact metric cards
+        this.renderCompactMonthlyCards(selectedYear, selectedMonth);
     }
 
-    renderConsolidatedData(selectedYear, selectedMonth) {
-        const tableBody = document.getElementById('consolidatedTableBody');
-        tableBody.innerHTML = '';
+    renderCompactMonthlyCards(selectedYear, selectedMonth) {
+        const cardsContainer = document.getElementById('monthlyCardsContainer');
+        cardsContainer.innerHTML = '';
 
         // Group data by month-year
         const groupedData = {};
@@ -802,28 +1049,192 @@ class SalaryBoardApp {
             return this.getMonthNumber(b.month) - this.getMonthNumber(a.month);
         });
 
-        sortedData.forEach((monthData, index) => {
-            const row = document.createElement('tr');
-            row.className = 'period-row';
-            row.dataset.periodKey = `${monthData.month}-${monthData.year}`;
-            row.style.cursor = 'pointer';
-            row.title = 'Click to view details';
-            
-            row.innerHTML = `
-                <td>${monthData.month}</td>
-                <td>${monthData.year}</td>
-                <td>${this.formatIndianNumber(monthData.employees.size)}</td>
-                <td>₹${this.formatIndianNumber(Math.round(monthData.totalGross))}</td>
-                <td>₹${this.formatIndianNumber(Math.round(monthData.totalDeductions))}</td>
-                <td>₹${this.formatIndianNumber(Math.round(monthData.totalNet))}</td>
-            `;
-            
-            row.addEventListener('click', () => {
-                this.togglePeriodDetails(`${monthData.month}-${monthData.year}`);
-            });
-            
-            tableBody.appendChild(row);
+        sortedData.forEach((monthData) => {
+            const card = this.createMonthlyMetricCard(monthData);
+            cardsContainer.appendChild(card);
         });
+    }
+
+    createMonthlyMetricCard(monthData) {
+        const card = document.createElement('div');
+        card.className = 'monthly-unified-card';
+        card.dataset.periodKey = `${monthData.month}-${monthData.year}`;
+        
+        card.innerHTML = `
+            <div class="card-header">
+                <h3 class="period-title">${monthData.month} ${monthData.year}</h3>
+                <span class="employee-badge">${monthData.employees.size} employees</span>
+            </div>
+            <div class="unified-metrics">
+                <div class="metric-row">
+                    <span class="metric-type">Gross:</span>
+                    <span class="metric-value gross-value">₹${this.formatIndianNumber(Math.round(monthData.totalGross))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Deductions:</span>
+                    <span class="metric-value deductions-value">₹${this.formatIndianNumber(Math.round(monthData.totalDeductions))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Net:</span>
+                    <span class="metric-value net-value">₹${this.formatIndianNumber(Math.round(monthData.totalNet))}</span>
+                </div>
+            </div>
+        `;
+        
+        card.addEventListener('click', () => {
+            this.showMonthlyBreakdown(monthData);
+        });
+        
+        return card;
+    }
+
+    showMonthlyBreakdown(monthData) {
+        // Calculate detailed breakdown
+        let breakdown = {
+            basic: 0, da: 0, hra: 0, ir: 0, sfn: 0, spayTypist: 0, p: 0,
+            it: 0, pt: 0, gslic: 0, lic: 0, fbf: 0
+        };
+
+        monthData.records.forEach(record => {
+            breakdown.basic += parseFloat(record['Basic']?.replace(/,/g, '') || 0);
+            breakdown.da += parseFloat(record['DA']?.replace(/,/g, '') || 0);
+            breakdown.hra += parseFloat(record['HRA']?.replace(/,/g, '') || 0);
+            breakdown.ir += parseFloat(record['IR']?.replace(/,/g, '') || 0);
+            breakdown.sfn += parseFloat(record['SFN']?.replace(/,/g, '') || 0);
+            breakdown.spayTypist += parseFloat(record['SPAY-TYPIST']?.replace(/,/g, '') || 0);
+            breakdown.p += parseFloat(record['P']?.replace(/,/g, '') || 0);
+            breakdown.it += parseFloat(record['IT']?.replace(/,/g, '') || 0);
+            breakdown.pt += parseFloat(record['PT']?.replace(/,/g, '') || 0);
+            breakdown.gslic += parseFloat(record['GSLIC']?.replace(/,/g, '') || 0);
+            breakdown.lic += parseFloat(record['LIC']?.replace(/,/g, '') || 0);
+            breakdown.fbf += parseFloat(record['FBF']?.replace(/,/g, '') || 0);
+        });
+
+        // Create breakdown modal
+        const modal = document.createElement('div');
+        modal.className = 'breakdown-modal';
+        modal.innerHTML = `
+            <div class="breakdown-content">
+                <div class="breakdown-header">
+                    <h3>${monthData.month} ${monthData.year} - Detailed Breakdown</h3>
+                    <button class="close-breakdown" aria-label="Close">&times;</button>
+                </div>
+                
+                <div class="breakdown-cards">
+                    <div class="breakdown-summary-card">
+                        <div class="summary-title">Summary</div>
+                        <div class="summary-metrics">
+                            <div class="summary-metric gross-summary">
+                                <div class="metric-label">Gross</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(monthData.totalGross))}</div>
+                            </div>
+                            <div class="summary-metric deductions-summary">
+                                <div class="metric-label">Deductions</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(monthData.totalDeductions))}</div>
+                            </div>
+                            <div class="summary-metric net-summary">
+                                <div class="metric-label">Net</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(monthData.totalNet))}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-details">
+                        <div class="detail-section">
+                            <h4>Allowances</h4>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Basic</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.basic))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">DA</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.da))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">HRA</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.hra))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">IR</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.ir))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">SFN</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.sfn))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">SPAY</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.spayTypist))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">P</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.p))}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Deductions</h4>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">IT</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.it))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">PT</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.pt))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">GSLIC</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.gslic))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">LIC</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.lic))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">FBF</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.fbf))}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-footer">
+                        <button class="close-breakdown-footer" type="button">
+                            <i class="fas fa-times"></i>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="breakdown-overlay"></div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal functionality
+        const closeBtn = modal.querySelector('.close-breakdown');
+        const closeFooterBtn = modal.querySelector('.close-breakdown-footer');
+        const overlay = modal.querySelector('.breakdown-overlay');
+        
+        const closeModal = () => {
+            document.body.removeChild(modal);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        closeFooterBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        // Close on Escape key
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
     }
 
     togglePeriodDetails(periodKey) {
@@ -1012,88 +1423,267 @@ class SalaryBoardApp {
 
         // Calculate additional metrics using stored values
         let totalDeductions = 0;
+        
+        // Individual allowance components
+        let totalBasic = 0;
+        let totalDA = 0;
+        let totalHRA = 0;
+        let totalIR = 0;
+        let totalSFN = 0;
+        let totalSpayTypist = 0;
+        let totalP = 0;
+        
+        // Individual deduction components
         let totalIT = 0;
+        let totalPT = 0;
+        let totalGSLIC = 0;
         let totalLIC = 0;
+        let totalFBF = 0;
 
         employee.records.forEach(record => {
             // Use stored values from when the record was processed
             totalDeductions += record.totalDeductions;
+            
+            // Add allowances
+            totalBasic += record.basic;
+            totalDA += record.da;
+            totalHRA += record.hra;
+            totalIR += record.ir;
+            totalSFN += record.sfn;
+            totalSpayTypist += record.spayTypist;
+            totalP += record.p;
+            
+            // Add deductions
             totalIT += record.it;
+            totalPT += record.pt;
+            totalGSLIC += record.gslic;
             totalLIC += record.lic;
+            totalFBF += record.fbf;
         });
 
         // Update employee metrics (without designation card)
         const employeeMetrics = document.getElementById('employeeMetrics');
         employeeMetrics.innerHTML = '';
 
-        const metrics = [
-            {
-                title: 'Total Records',
-                value: this.formatIndianNumber(employee.records.length),
-                class: 'primary'
-            },
-            {
-                title: 'Total Gross Salary',
-                value: `₹${this.formatIndianNumber(Math.round(employee.totalGross))}`,
-                class: 'secondary'
-            },
-            {
-                title: 'Total Deductions',
-                value: `₹${this.formatIndianNumber(Math.round(totalDeductions))}`,
-                class: 'accent'
-            },
-            {
-                title: 'Total Net Salary',
-                value: `₹${this.formatIndianNumber(Math.round(employee.totalNet))}`,
-                class: 'primary'
-            },
-            {
-                title: 'Total IT',
-                value: `₹${this.formatIndianNumber(Math.round(totalIT))}`,
-                class: 'secondary'
-            },
-            {
-                title: 'Total LIC',
-                value: `₹${this.formatIndianNumber(Math.round(totalLIC))}`,
-                class: 'accent'
-            }
-        ];
-
-        metrics.forEach(metric => {
-            const card = this.createMetricCard(metric);
-            employeeMetrics.appendChild(card);
+        // Create employee comprehensive metric card similar to dashboard
+        const employeeCard = this.createEmployeeComprehensiveMetricCard({
+            employee: employee,
+            totalRecords: employee.records.length,
+            grossSalary: employee.totalGross,
+            deductions: totalDeductions,
+            netSalary: employee.totalNet,
+            // Allowances
+            basic: totalBasic,
+            da: totalDA,
+            hra: totalHRA,
+            ir: totalIR,
+            sfn: totalSFN,
+            spayTypist: totalSpayTypist,
+            p: totalP,
+            // Deductions
+            it: totalIT,
+            pt: totalPT,
+            gslic: totalGSLIC,
+            lic: totalLIC,
+            fbf: totalFBF
         });
 
-        // Update salary history with exact same structure as consolidated data
-        const tableBody = document.getElementById('employeeSalaryTableBody');
-        tableBody.innerHTML = '';
+        employeeMetrics.appendChild(employeeCard);
 
-        employee.records
-            .sort((a, b) => {
-                if (a.year !== b.year) return b.year - a.year;
-                return this.getMonthNumber(b.month) - this.getMonthNumber(a.month);
-            })
-            .forEach(record => {
-                const row = document.createElement('tr');
-                row.className = 'employee-salary-row';
-                row.dataset.recordKey = `${record.month}-${record.year}`;
-                row.style.cursor = 'pointer';
-                row.title = 'Click to view details';
+        // Update salary history with card design similar to monthly cards
+        this.renderEmployeeSalaryCards(employee);
+    }
+
+    renderEmployeeSalaryCards(employee) {
+        // Find or create the container for employee salary cards
+        let cardsContainer = document.getElementById('employeeSalaryCards');
+        if (!cardsContainer) {
+            // Create the container if it doesn't exist
+            const tableContainer = document.querySelector('#employeeSection .data-table-container');
+            if (tableContainer) {
+                cardsContainer = document.createElement('div');
+                cardsContainer.id = 'employeeSalaryCards';
+                cardsContainer.className = 'monthly-cards-container';
+                tableContainer.parentNode.replaceChild(cardsContainer, tableContainer);
+            } else {
+                return; // Cannot find suitable place to insert cards
+            }
+        } else {
+            cardsContainer.innerHTML = '';
+        }
+
+        // Sort records by date (newest first)
+        const sortedRecords = employee.records.sort((a, b) => {
+            if (a.year !== b.year) return b.year - a.year;
+            return this.getMonthNumber(b.month) - this.getMonthNumber(a.month);
+        });
+
+        // Create cards for each salary record
+        sortedRecords.forEach((record) => {
+            const card = this.createEmployeeSalaryCard(record, employee);
+            cardsContainer.appendChild(card);
+        });
+    }
+
+    createEmployeeSalaryCard(record, employee) {
+        const card = document.createElement('div');
+        card.className = 'monthly-unified-card';
+        card.dataset.recordKey = `${record.month}-${record.year}`;
+        
+        card.innerHTML = `
+            <div class="card-header">
+                <h3 class="period-title">${record.month} ${record.year}</h3>
+                <span class="employee-badge">${this.abbreviateDesignation(employee.designation)}</span>
+            </div>
+            <div class="unified-metrics">
+                <div class="metric-row">
+                    <span class="metric-type">Gross:</span>
+                    <span class="metric-value gross-value">₹${this.formatIndianNumber(Math.round(record.grossSalary))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Deductions:</span>
+                    <span class="metric-value deductions-value">₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Net:</span>
+                    <span class="metric-value net-value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</span>
+                </div>
+            </div>
+        `;
+        
+        card.addEventListener('click', () => {
+            this.showEmployeeSalaryBreakdown(record, employee);
+        });
+        
+        return card;
+    }
+
+    showEmployeeSalaryBreakdown(record, employee) {
+        // Create breakdown modal similar to monthly breakdown
+        const modal = document.createElement('div');
+        modal.className = 'breakdown-modal';
+        modal.innerHTML = `
+            <div class="breakdown-content">
+                <div class="breakdown-header">
+                    <h3>${employee.name} - ${record.month} ${record.year}</h3>
+                    <button class="close-breakdown" aria-label="Close">&times;</button>
+                </div>
                 
-                row.innerHTML = `
-                    <td>${record.month}</td>
-                    <td>${record.year}</td>
-                    <td>₹${this.formatIndianNumber(Math.round(record.grossSalary))}</td>
-                    <td>₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</td>
-                    <td>₹${this.formatIndianNumber(Math.round(record.netSalary))}</td>
-                `;
-                
-                row.addEventListener('click', () => {
-                    this.toggleEmployeeSalaryDetails(record);
-                });
-                
-                tableBody.appendChild(row);
-            });
+                <div class="breakdown-cards">
+                    <div class="breakdown-summary-card">
+                        <div class="summary-title">Summary</div>
+                        <div class="summary-metrics">
+                            <div class="summary-metric gross-summary">
+                                <div class="metric-label">Gross</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(record.grossSalary))}</div>
+                            </div>
+                            <div class="summary-metric deductions-summary">
+                                <div class="metric-label">Deductions</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</div>
+                            </div>
+                            <div class="summary-metric net-summary">
+                                <div class="metric-label">Net</div>
+                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-details">
+                        <div class="detail-section">
+                            <h4>Allowances</h4>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Basic</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.basic))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">DA</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.da))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">HRA</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.hra))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">IR</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.ir))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">SFN</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.sfn))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">SPAY</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.spayTypist))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">P</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.p))}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Deductions</h4>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">IT</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.it))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">PT</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.pt))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">GSLIC</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.gslic))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">LIC</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.lic))}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">FBF</span>
+                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.fbf))}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-footer">
+                        <button class="close-breakdown-footer" type="button">
+                            <i class="fas fa-times"></i>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="breakdown-overlay"></div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal functionality
+        const closeBtn = modal.querySelector('.close-breakdown');
+        const closeFooterBtn = modal.querySelector('.close-breakdown-footer');
+        const overlay = modal.querySelector('.breakdown-overlay');
+        
+        const closeModal = () => {
+            document.body.removeChild(modal);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        closeFooterBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        // Close on Escape key
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
     }
 
     toggleEmployeeSalaryDetails(record) {

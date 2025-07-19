@@ -1280,6 +1280,37 @@ tr:hover {
     padding: 0.5rem;
     font-size: 0.9rem;
   }
+
+  /* Compact Cards for Small Mobile */
+  .compact-cards-container {
+    margin-top: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .compact-cards-section h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .compact-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.3rem;
+  }
+
+  .compact-card {
+    padding: 0.3rem;
+    min-height: 50px;
+    aspect-ratio: 1;
+  }
+
+  .compact-card-label {
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .compact-card-value {
+    font-size: 0.8rem;
+  }
 }
 
 /* Utility Classes */
@@ -1314,4 +1345,687 @@ tr:hover {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* Monthly Compact Cards */
+.monthly-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.monthly-unified-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+
+.monthly-unified-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--primary-color);
+  background: var(--background-color);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.period-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.employee-badge {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: var(--primary-color);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 1rem;
+  font-weight: 600;
+}
+
+.unified-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.metric-row:hover {
+  background: var(--surface-color);
+  border-color: var(--primary-color);
+}
+
+.metric-type {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.gross-value {
+  color: #10B981;
+}
+
+.deductions-value {
+  color: #EF4444;
+}
+
+.net-value {
+  color: var(--primary-color);
+}
+
+.salary-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.salary-metric {
+  text-align: center;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.salary-metric.gross {
+  border-left: 4px solid #10B981;
+}
+
+.salary-metric.deductions {
+  border-left: 4px solid #EF4444;
+}
+
+.salary-metric.net {
+  border-left: 4px solid var(--primary-color);
+}
+
+.salary-metric:hover {
+  background: var(--surface-color);
+}
+
+.metric-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.breakdown-sections {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.allowances-section, .deductions-section {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+}
+
+.allowances-section h4, .deductions-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.breakdown-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.breakdown-item:hover {
+  background: var(--background-color);
+}
+
+.item-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.item-value {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Breakdown Modal */
+.breakdown-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.breakdown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: -1;
+}
+
+.breakdown-content {
+  position: relative;
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.breakdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--background-color);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.breakdown-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.close-breakdown {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.close-breakdown:hover {
+  background: var(--background-color);
+  color: var(--text-primary);
+}
+
+.breakdown-cards {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.breakdown-summary-card {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+}
+
+.summary-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.summary-metric {
+  text-align: center;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+}
+
+.summary-metric.gross-summary {
+  border-left: 4px solid #10B981;
+}
+
+.summary-metric.deductions-summary {
+  border-left: 4px solid #EF4444;
+}
+
+.summary-metric.net-summary {
+  border-left: 4px solid var(--primary-color);
+}
+
+.breakdown-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.detail-section {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+}
+
+.detail-section h4 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.detail-item:hover {
+  background: var(--background-color);
+}
+
+.detail-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Breakdown Footer Styles */
+.breakdown-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.close-breakdown-footer {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  min-width: 120px;
+  justify-content: center;
+}
+
+.close-breakdown-footer:hover {
+  background: var(--gradient-secondary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.close-breakdown-footer:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.close-breakdown-footer i {
+  font-size: 0.9rem;
+}
+
+/* Clickable Breakdown Cards */
+.clickable-breakdown {
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.clickable-breakdown:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-color);
+}
+
+.clickable-breakdown::after {
+  content: '👆';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 1rem;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.clickable-breakdown:hover::after {
+  opacity: 1;
+}
+
+.breakdown-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  opacity: 0;
+  transition: var(--transition);
+  font-style: italic;
+}
+
+.clickable-breakdown:hover .breakdown-hint {
+  opacity: 1;
+}
+
+/* Compact Cards Styles */
+.compact-cards-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.compact-cards-section h4 {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.4rem;
+}
+
+.compact-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.5rem;
+}
+
+.compact-card {
+  background: var(--background-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 70px;
+}
+
+.compact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
+}
+
+.compact-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.allowance-card::before {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.deduction-card::before {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.compact-card-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.compact-card-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.allowance-card {
+  border-color: #10b981;
+}
+
+.allowance-card:hover {
+  border-color: #059669;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.deduction-card {
+  border-color: #ef4444;
+}
+
+.deduction-card:hover {
+  border-color: #dc2626;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Mobile Responsive for Compact Cards */
+@media (max-width: 768px) {
+  .monthly-cards-container {
+    padding: 0.25rem;
+    gap: 0.75rem;
+  }
+
+  .monthly-unified-card {
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .period-title {
+    font-size: 1.1rem;
+  }
+
+  .employee-badge {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .unified-metrics {
+    gap: 0.75rem;
+  }
+
+  .metric-row {
+    padding: 0.75rem;
+  }
+
+  .metric-type {
+    font-size: 0.9rem;
+  }
+
+  .metric-value {
+    font-size: 1.1rem;
+  }
+
+  .breakdown-modal {
+    padding: 1rem;
+  }
+
+  .breakdown-content {
+    max-height: 95vh;
+  }
+
+  .breakdown-header {
+    padding: 1rem;
+  }
+
+  .breakdown-cards {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .summary-metrics {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .breakdown-details {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .detail-section {
+    padding: 1rem;
+  }
+
+  .breakdown-footer {
+    padding: 1rem;
+  }
+
+  .close-breakdown-footer {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+  }
+
+  /* Compact Cards Mobile Layout */
+  .compact-cards-container {
+    margin-top: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .compact-cards-section h4 {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .compact-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .compact-card {
+    padding: 0.4rem;
+    min-height: 60px;
+    aspect-ratio: 1.1;
+  }
+
+  .compact-card-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .compact-card-value {
+    font-size: 0.85rem;
+  }
 }
