@@ -1062,8 +1062,10 @@ class SalaryBoardApp {
         
         card.innerHTML = `
             <div class="card-header">
-                <h3 class="period-title">${monthData.month} ${monthData.year}</h3>
-                <span class="employee-badge">${monthData.employees.size} employees</span>
+                <div class="header-content">
+                    <h3 class="period-title">${monthData.month} ${monthData.year}</h3>
+                    <span class="employee-badge">${monthData.employees.size} employees</span>
+                </div>
             </div>
             <div class="unified-metrics">
                 <div class="metric-row">
@@ -1116,7 +1118,10 @@ class SalaryBoardApp {
         modal.innerHTML = `
             <div class="breakdown-content">
                 <div class="breakdown-header">
-                    <h3>${monthData.month} ${monthData.year} - Detailed Breakdown</h3>
+                    <div class="breakdown-title-section">
+                        <h3>${monthData.month} ${monthData.year}</h3>
+                        <span class="breakdown-employee-badge">${monthData.employees.size} employees</span>
+                    </div>
                     <button class="close-breakdown" aria-label="Close">&times;</button>
                 </div>
                 
