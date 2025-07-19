@@ -702,15 +702,17 @@ body {
   border: 1px solid var(--border-color);
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 500px;
+  max-height: 600px;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  position: relative;
 }
 
 .consolidated-table {
   width: 100%;
   min-width: 800px;
   border-collapse: collapse;
+  position: relative;
 }
 
 .consolidated-table th {
@@ -722,7 +724,8 @@ body {
   border-bottom: 2px solid var(--border-color);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .consolidated-table td {
