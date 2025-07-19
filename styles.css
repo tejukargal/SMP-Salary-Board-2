@@ -364,7 +364,7 @@ body {
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
 }
@@ -383,7 +383,7 @@ body {
   text-align: left;
   border-bottom: 2px solid var(--border-color);
   position: sticky;
-  top: 0;
+  top: 80px;
   z-index: 5;
 }
 
