@@ -42,7 +42,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
   background: var(--background-color);
   color: var(--text-primary);
   line-height: 1.6;
@@ -249,12 +249,27 @@ body {
 }
 
 .dashboard-controls select {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
   border-radius: var(--border-radius);
   background: var(--surface-color);
   color: var(--text-primary);
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  min-height: 48px;
+  transition: var(--transition);
+}
+
+.dashboard-controls select:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-controls select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .metrics-grid {
@@ -1086,12 +1101,28 @@ tr:hover {
   }
   
   .dashboard-controls {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
+    gap: 0.5rem;
   }
   
   .dashboard-controls select {
-    width: 100%;
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    min-height: 48px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--surface-color);
+    color: var(--text-primary);
+    transition: var(--transition);
+  }
+
+  .dashboard-controls select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   }
   
   .metrics-grid {
@@ -2291,13 +2322,13 @@ table,
   }
 
   .breakdown-label {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-primary);
   }
 
   .breakdown-value {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--text-primary);
   }
@@ -2311,7 +2342,7 @@ table,
   }
 
   .summary-label, .summary-value {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .detail-section {
@@ -2370,12 +2401,12 @@ table,
   }
 
   .compact-card-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     margin-bottom: 0.3rem;
   }
 
   .compact-card-value {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   /* Ensure alignment consistency for very small screens */
@@ -2418,13 +2449,13 @@ table,
   }
 
   .breakdown-label {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
   }
 
   .breakdown-value {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-primary);
   }
@@ -2436,7 +2467,7 @@ table,
   }
 
   .summary-label, .summary-value {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 
   .section-title {
