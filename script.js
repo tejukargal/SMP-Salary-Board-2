@@ -892,7 +892,6 @@ class SalaryBoardApp {
                 <div class="breakdown-header">
                     <div class="breakdown-title-section">
                         <h3>${data.employee.name}</h3>
-                        <span class="breakdown-employee-badge">${data.employee.empNo} • ${this.abbreviateDesignation(data.employee.designation)}</span>
                     </div>
                     <button class="close-breakdown" aria-label="Close">&times;</button>
                 </div>

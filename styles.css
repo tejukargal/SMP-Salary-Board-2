@@ -1420,7 +1420,7 @@ table,
 
 .header-content {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
 }
@@ -1428,8 +1428,8 @@ table,
 .title-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
   gap: 0.5rem;
 }
 
@@ -2144,16 +2144,16 @@ table,
 
   .header-content {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 0.5rem;
   }
 
   .title-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
     gap: 0.5rem;
   }
 
