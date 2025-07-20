@@ -1165,16 +1165,6 @@ tr:hover {
     padding-left: 1rem;
   }
   
-  .data-table-container::after {
-    content: '← Swipe to view more →';
-    position: absolute;
-    bottom: 0.5rem;
-    right: 1rem;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    pointer-events: none;
-    opacity: 0.7;
-  }
   
   .details-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -1328,23 +1318,32 @@ tr:hover {
 .hidden { display: none; }
 .visible { display: block; }
 
-/* Scrollbar Styling */
+/* Hide All Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 0px;
+  height: 0px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background-color);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: transparent;
+}
+
+/* Hide scrollbars for Firefox */
+.data-table-container,
+.consolidated-table,
+table,
+.monthly-cards-container {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
 /* Monthly Compact Cards */
@@ -1379,8 +1378,8 @@ tr:hover {
 }
 
 .card-header {
-  margin: -1.5rem -1.5rem 1.5rem -1.5rem;
-  padding: 1rem 1.5rem;
+  margin: -1.5rem -1.5rem 1rem -1.5rem;
+  padding: 0.75rem 1.5rem;
   background: var(--background-color);
   border-bottom: 1px solid var(--border-color);
   border-radius: var(--border-radius) var(--border-radius) 0 0;
@@ -1388,9 +1387,17 @@ tr:hover {
 
 .header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
 }
 
 .period-title {
@@ -1408,6 +1415,16 @@ tr:hover {
   padding: 0.4rem 0.8rem;
   border-radius: 1rem;
   font-weight: 600;
+}
+
+.employee-count {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: var(--background-color);
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
 }
 
 .unified-metrics {
@@ -1518,6 +1535,113 @@ tr:hover {
   gap: 1.5rem;
 }
 
+.breakdown-text {
+  padding: 1.5rem;
+}
+
+.breakdown-summary {
+  margin-bottom: 1.5rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.75rem;
+  transition: var(--transition);
+}
+
+.summary-line:hover {
+  background: var(--surface-color);
+  border-color: var(--primary-color);
+}
+
+.summary-line.total {
+  border: 2px solid var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+}
+
+.summary-line.total:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.summary-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.summary-line.total .summary-label {
+  color: white;
+}
+
+.summary-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.summary-line.total .summary-value {
+  color: white;
+}
+
+.breakdown-separator {
+  height: 2px;
+  background: var(--border-color);
+  border-radius: 1px;
+  margin: 1.5rem 0;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.breakdown-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.breakdown-line:hover {
+  background: var(--surface-color);
+  border-color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.breakdown-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.breakdown-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
 .allowances-section, .deductions-section {
   background: var(--background-color);
   border: 1px solid var(--border-color);
@@ -1599,10 +1723,12 @@ tr:hover {
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-color);
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
   animation: fadeIn 0.3s ease-out;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .breakdown-header {
@@ -1786,12 +1912,16 @@ tr:hover {
   justify-content: center;
   align-items: center;
   border-radius: 0 0 var(--border-radius) var(--border-radius);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .close-breakdown-footer {
-  background: var(--gradient-primary);
-  color: white;
-  border: none;
+  background: var(--surface-color);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: 0.75rem 2rem;
   font-size: 1rem;
@@ -1800,14 +1930,15 @@ tr:hover {
   transition: var(--transition);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
   box-shadow: var(--shadow-sm);
   min-width: 120px;
-  justify-content: center;
 }
 
 .close-breakdown-footer:hover {
-  background: var(--gradient-secondary);
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -1971,22 +2102,36 @@ tr:hover {
   }
 
   .card-header {
-    margin: -1.25rem -1.25rem 1rem -1.25rem;
-    padding: 0.75rem 1.25rem;
+    margin: -1.25rem -1.25rem 0.75rem -1.25rem;
+    padding: 0.5rem 1.25rem;
     background: var(--background-color);
     border-bottom: 1px solid var(--border-color);
     border-radius: var(--border-radius) var(--border-radius) 0 0;
   }
 
   .header-content {
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .title-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 0.5rem;
   }
 
   .period-title {
     font-size: 1.1rem;
+  }
+
+  .employee-count {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.6rem;
   }
 
   .employee-badge {
@@ -2012,10 +2157,27 @@ tr:hover {
 
   .breakdown-modal {
     padding: 1rem;
+    align-items: center;
+    justify-content: center;
   }
 
   .breakdown-content {
-    max-height: 95vh;
+    max-height: 80vh;
+    min-height: 60vh;
+    border-radius: var(--border-radius);
+    margin: 0;
+    animation: centerPopIn 0.3s ease-out;
+  }
+
+  @keyframes centerPopIn {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   .breakdown-header {
@@ -2059,18 +2221,97 @@ tr:hover {
     gap: 1rem;
   }
 
+  .breakdown-sections {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .breakdown-text {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .breakdown-line {
+    padding: 0.4rem 0.6rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breakdown-line:hover {
+    transform: none;
+    background: var(--background-color);
+  }
+
+  .breakdown-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .breakdown-value {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .summary-line {
+    padding: 0.6rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .summary-label, .summary-value {
+    font-size: 0.85rem;
+  }
+
   .detail-section {
     padding: 1rem;
   }
 
   .breakdown-footer {
-    padding: 1rem;
+    padding: 0.8rem 1rem;
+    position: sticky;
+    bottom: 0;
+    background: var(--surface-color);
+    border-top: 2px solid var(--border-color);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .close-breakdown-footer {
-    padding: 0.6rem 1.5rem;
-    font-size: 0.9rem;
-    min-width: 100px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    min-width: 120px;
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    background: var(--surface-color);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  .close-breakdown-footer:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
   }
 
   /* Compact Cards Mobile Layout */
@@ -2102,5 +2343,120 @@ tr:hover {
 
   .compact-card-value {
     font-size: 0.85rem;
+  }
+
+  /* Ensure alignment consistency for very small screens */
+  .title-section {
+    gap: 0.4rem;
+  }
+
+  .period-title {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .employee-count {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.5rem;
+  }
+
+  /* Additional Mobile Breakdown Styles */
+  .breakdown-sections {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .section-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+  }
+
+  .breakdown-line {
+    padding: 0.3rem 0.4rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.1rem;
+  }
+
+  .breakdown-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .breakdown-value {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .summary-line {
+    padding: 0.5rem;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .summary-label, .summary-value {
+    font-size: 0.8rem;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Additional Small Mobile Modal Optimizations */
+  .breakdown-modal {
+    padding: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .breakdown-content {
+    max-height: 85vh;
+    min-height: 50vh;
+    border-radius: var(--border-radius);
+  }
+
+  .breakdown-header {
+    padding: 0.75rem;
+  }
+
+  .breakdown-text {
+    padding: 0.75rem;
+  }
+
+  .breakdown-footer {
+    padding: 0.6rem 0.75rem;
+    position: sticky;
+    bottom: 0;
+    background: var(--surface-color);
+    border-top: 2px solid var(--border-color);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .close-breakdown-footer {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+    font-weight: 600;
+    border-radius: 8px;
+    background: var(--surface-color);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+  }
+
+  .close-breakdown-footer:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-lg);
   }
 }

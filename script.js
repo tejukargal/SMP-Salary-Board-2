@@ -784,7 +784,6 @@ class SalaryBoardApp {
                     
                     <div class="breakdown-footer">
                         <button class="close-breakdown-footer" type="button">
-                            <i class="fas fa-times"></i>
                             Close
                         </button>
                     </div>
@@ -922,7 +921,6 @@ class SalaryBoardApp {
                     
                     <div class="breakdown-footer">
                         <button class="close-breakdown-footer" type="button">
-                            <i class="fas fa-times"></i>
                             Close
                         </button>
                     </div>
@@ -1063,8 +1061,10 @@ class SalaryBoardApp {
         card.innerHTML = `
             <div class="card-header">
                 <div class="header-content">
-                    <h3 class="period-title">${monthData.month} ${monthData.year}</h3>
-                    <span class="employee-badge">${monthData.employees.size} employees</span>
+                    <div class="title-section">
+                        <h3 class="period-title">${monthData.month} ${monthData.year}</h3>
+                        <span class="employee-count">${monthData.employees.size} employees</span>
+                    </div>
                 </div>
             </div>
             <div class="unified-metrics">
@@ -1120,98 +1120,94 @@ class SalaryBoardApp {
                 <div class="breakdown-header">
                     <div class="breakdown-title-section">
                         <h3>${monthData.month} ${monthData.year}</h3>
-                        <span class="breakdown-employee-badge">${monthData.employees.size} employees</span>
                     </div>
                     <button class="close-breakdown" aria-label="Close">&times;</button>
                 </div>
                 
-                <div class="breakdown-cards">
-                    <div class="breakdown-summary-card">
-                        <div class="summary-title">Summary</div>
-                        <div class="summary-metrics">
-                            <div class="summary-metric gross-summary">
-                                <div class="metric-label">Gross</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(monthData.totalGross))}</div>
-                            </div>
-                            <div class="summary-metric deductions-summary">
-                                <div class="metric-label">Deductions</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(monthData.totalDeductions))}</div>
-                            </div>
-                            <div class="summary-metric net-summary">
-                                <div class="metric-label">Net</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(monthData.totalNet))}</div>
-                            </div>
+                <div class="breakdown-text">
+                    <div class="breakdown-summary">
+                        <div class="summary-line">
+                            <span class="summary-label">Total Gross Salary</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(monthData.totalGross))}</span>
+                        </div>
+                        <div class="summary-line">
+                            <span class="summary-label">Total Deductions</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(monthData.totalDeductions))}</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span class="summary-label">Net Salary</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(monthData.totalNet))}</span>
                         </div>
                     </div>
                     
-                    <div class="breakdown-details">
-                        <div class="detail-section">
-                            <h4>Allowances</h4>
-                            <div class="detail-grid">
-                                <div class="detail-item">
-                                    <span class="detail-label">Basic</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.basic))}</span>
+                    <div class="breakdown-separator"></div>
+                    
+                    <div class="breakdown-sections">
+                        <div class="breakdown-section">
+                            <h4 class="section-title">Allowances</h4>
+                            <div class="section-content">
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">Basic</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.basic))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">DA</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.da))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">DA</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.da))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">HRA</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.hra))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">HRA</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.hra))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">IR</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.ir))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">IR</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.ir))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">SFN</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.sfn))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">SFN</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.sfn))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">SPAY</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.spayTypist))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">SP-Typist</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.spayTypist))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">P</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.p))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">P Allow</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.p))}</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="detail-section">
-                            <h4>Deductions</h4>
-                            <div class="detail-grid">
-                                <div class="detail-item">
-                                    <span class="detail-label">IT</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.it))}</span>
+                        <div class="breakdown-section">
+                            <h4 class="section-title">Deductions</h4>
+                            <div class="section-content">
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">IT</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.it))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">PT</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.pt))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">PT</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.pt))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">GSLIC</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.gslic))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">GSLIC</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.gslic))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">LIC</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.lic))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">LIC</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.lic))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">FBF</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(breakdown.fbf))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">FBF</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(breakdown.fbf))}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="breakdown-footer">
-                        <button class="close-breakdown-footer" type="button">
-                            <i class="fas fa-times"></i>
-                            Close
-                        </button>
-                    </div>
+                </div>
+                <div class="breakdown-footer">
+                    <button class="close-breakdown-footer" aria-label="Close Modal">
+                        Close
+                    </button>
                 </div>
             </div>
             <div class="breakdown-overlay"></div>
@@ -1570,97 +1566,97 @@ class SalaryBoardApp {
         modal.innerHTML = `
             <div class="breakdown-content">
                 <div class="breakdown-header">
-                    <h3>${employee.name} - ${record.month} ${record.year}</h3>
+                    <div class="breakdown-title-section">
+                        <h3>${employee.name}</h3>
+                        <span class="breakdown-employee-badge">${record.month} ${record.year}</span>
+                    </div>
                     <button class="close-breakdown" aria-label="Close">&times;</button>
                 </div>
                 
-                <div class="breakdown-cards">
-                    <div class="breakdown-summary-card">
-                        <div class="summary-title">Summary</div>
-                        <div class="summary-metrics">
-                            <div class="summary-metric gross-summary">
-                                <div class="metric-label">Gross</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(record.grossSalary))}</div>
-                            </div>
-                            <div class="summary-metric deductions-summary">
-                                <div class="metric-label">Deductions</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</div>
-                            </div>
-                            <div class="summary-metric net-summary">
-                                <div class="metric-label">Net</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</div>
-                            </div>
+                <div class="breakdown-text">
+                    <div class="breakdown-summary">
+                        <div class="summary-line">
+                            <span class="summary-label">Total Gross Salary</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(record.grossSalary))}</span>
+                        </div>
+                        <div class="summary-line">
+                            <span class="summary-label">Total Deductions</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(record.totalDeductions))}</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span class="summary-label">Net Salary</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</span>
                         </div>
                     </div>
                     
-                    <div class="breakdown-details">
-                        <div class="detail-section">
-                            <h4>Allowances</h4>
-                            <div class="detail-grid">
-                                <div class="detail-item">
-                                    <span class="detail-label">Basic</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.basic))}</span>
+                    <div class="breakdown-separator"></div>
+                    
+                    <div class="breakdown-sections">
+                        <div class="breakdown-section">
+                            <h4 class="section-title">Allowances</h4>
+                            <div class="section-content">
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">Basic</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.basic))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">DA</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.da))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">DA</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.da))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">HRA</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.hra))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">HRA</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.hra))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">IR</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.ir))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">IR</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.ir))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">SFN</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.sfn))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">SFN</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.sfn))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">SPAY</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.spayTypist))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">SP-Typist</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.spayTypist))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">P</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.p))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">P Allow</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.p))}</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="detail-section">
-                            <h4>Deductions</h4>
-                            <div class="detail-grid">
-                                <div class="detail-item">
-                                    <span class="detail-label">IT</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.it))}</span>
+                        <div class="breakdown-section">
+                            <h4 class="section-title">Deductions</h4>
+                            <div class="section-content">
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">IT</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.it))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">PT</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.pt))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">PT</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.pt))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">GSLIC</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.gslic))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">GSLIC</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.gslic))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">LIC</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.lic))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">LIC</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.lic))}</span>
                                 </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">FBF</span>
-                                    <span class="detail-value">₹${this.formatIndianNumber(Math.round(record.fbf))}</span>
+                                <div class="breakdown-line">
+                                    <span class="breakdown-label">FBF</span>
+                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.fbf))}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="breakdown-footer">
-                        <button class="close-breakdown-footer" type="button">
-                            <i class="fas fa-times"></i>
-                            Close
-                        </button>
-                    </div>
+                </div>
+                <div class="breakdown-footer">
+                    <button class="close-breakdown-footer" aria-label="Close Modal">
+                        Close
+                    </button>
                 </div>
             </div>
             <div class="breakdown-overlay"></div>
