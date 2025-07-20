@@ -753,40 +753,40 @@ class SalaryBoardApp {
         modal.innerHTML = `
             <div class="breakdown-content">
                 <div class="breakdown-header">
-                    <h3>${title}</h3>
+                    <div class="breakdown-title-section">
+                        <h3>${title}</h3>
+                    </div>
                     <button class="close-breakdown" aria-label="Close">&times;</button>
                 </div>
                 
-                <div class="breakdown-cards">
-                    <div class="breakdown-summary-card">
-                        <div class="summary-title">Total ${breakdownType === 'allowances' ? 'Gross Salary' : 'Deductions'}</div>
-                        <div class="summary-metrics">
-                            <div class="summary-metric ${breakdownType === 'allowances' ? 'gross-summary' : 'deductions-summary'}">
-                                <div class="metric-label">${breakdownType === 'allowances' ? 'Gross' : 'Deductions'}</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(breakdownType === 'allowances' ? data.grossSalary : data.deductions))}</div>
-                            </div>
+                <div class="breakdown-text">
+                    <div class="breakdown-summary">
+                        <div class="summary-line total">
+                            <span class="summary-label">Total ${breakdownType === 'allowances' ? 'Gross Salary' : 'Deductions'}</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(breakdownType === 'allowances' ? data.grossSalary : data.deductions))}</span>
                         </div>
                     </div>
                     
-                    <div class="breakdown-details">
-                        <div class="detail-section">
-                            <h4>${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
-                            <div class="detail-grid">
+                    <div class="breakdown-separator"></div>
+                    
+                    <div class="breakdown-sections">
+                        <div class="breakdown-section">
+                            <h4 class="section-title">${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
+                            <div class="section-content">
                                 ${items.map(item => `
-                                    <div class="detail-item">
-                                        <span class="detail-label">${item.label}</span>
-                                        <span class="detail-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
+                                    <div class="breakdown-line">
+                                        <span class="breakdown-label">${item.label}</span>
+                                        <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="breakdown-footer">
-                        <button class="close-breakdown-footer" type="button">
-                            Close
-                        </button>
-                    </div>
+                </div>
+                <div class="breakdown-footer">
+                    <button class="close-breakdown-footer" aria-label="Close Modal">
+                        Close
+                    </button>
                 </div>
             </div>
             <div class="breakdown-overlay"></div>
@@ -823,8 +823,8 @@ class SalaryBoardApp {
         
         card.innerHTML = `
             <div class="comprehensive-header">
-                <h3>${data.employee.name} - Summary Overview</h3>
-                <div class="period-info">${this.abbreviateDesignation(data.employee.designation)} • ${data.totalRecords} Records</div>
+                <h3>${data.employee.name}</h3>
+                <div class="period-info">${data.employee.empNo} • ${this.abbreviateDesignation(data.employee.designation)} • ${data.totalRecords} Records</div>
             </div>
             
             <div class="comprehensive-content">
@@ -866,7 +866,7 @@ class SalaryBoardApp {
         
         let title, items;
         if (breakdownType === 'allowances') {
-            title = `${data.employee.name} - Allowances Breakdown`;
+            title = `${breakdownType === 'allowances' ? 'Allowances' : 'Deductions'} Breakdown`;
             items = [
                 { label: 'Basic', value: data.basic },
                 { label: 'DA', value: data.da },
@@ -877,7 +877,7 @@ class SalaryBoardApp {
                 { label: 'P', value: data.p }
             ];
         } else {
-            title = `${data.employee.name} - Deductions Breakdown`;
+            title = `${breakdownType === 'allowances' ? 'Allowances' : 'Deductions'} Breakdown`;
             items = [
                 { label: 'IT', value: data.it },
                 { label: 'PT', value: data.pt },
@@ -890,40 +890,41 @@ class SalaryBoardApp {
         modal.innerHTML = `
             <div class="breakdown-content">
                 <div class="breakdown-header">
-                    <h3>${title}</h3>
+                    <div class="breakdown-title-section">
+                        <h3>${data.employee.name}</h3>
+                        <span class="breakdown-employee-badge">${data.employee.empNo} • ${this.abbreviateDesignation(data.employee.designation)}</span>
+                    </div>
                     <button class="close-breakdown" aria-label="Close">&times;</button>
                 </div>
                 
-                <div class="breakdown-cards">
-                    <div class="breakdown-summary-card">
-                        <div class="summary-title">Total ${breakdownType === 'allowances' ? 'Gross Salary' : 'Deductions'}</div>
-                        <div class="summary-metrics">
-                            <div class="summary-metric ${breakdownType === 'allowances' ? 'gross-summary' : 'deductions-summary'}">
-                                <div class="metric-label">${breakdownType === 'allowances' ? 'Gross' : 'Deductions'}</div>
-                                <div class="metric-value">₹${this.formatIndianNumber(Math.round(breakdownType === 'allowances' ? data.grossSalary : data.deductions))}</div>
-                            </div>
+                <div class="breakdown-text">
+                    <div class="breakdown-summary">
+                        <div class="summary-line total">
+                            <span class="summary-label">Total ${breakdownType === 'allowances' ? 'Gross Salary' : 'Deductions'}</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(breakdownType === 'allowances' ? data.grossSalary : data.deductions))}</span>
                         </div>
                     </div>
                     
-                    <div class="breakdown-details">
-                        <div class="detail-section">
-                            <h4>${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
-                            <div class="detail-grid">
+                    <div class="breakdown-separator"></div>
+                    
+                    <div class="breakdown-sections">
+                        <div class="breakdown-section">
+                            <h4 class="section-title">${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
+                            <div class="section-content">
                                 ${items.map(item => `
-                                    <div class="detail-item">
-                                        <span class="detail-label">${item.label}</span>
-                                        <span class="detail-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
+                                    <div class="breakdown-line">
+                                        <span class="breakdown-label">${item.label}</span>
+                                        <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="breakdown-footer">
-                        <button class="close-breakdown-footer" type="button">
-                            Close
-                        </button>
-                    </div>
+                </div>
+                <div class="breakdown-footer">
+                    <button class="close-breakdown-footer" aria-label="Close Modal">
+                        Close
+                    </button>
                 </div>
             </div>
             <div class="breakdown-overlay"></div>
@@ -1420,7 +1421,8 @@ class SalaryBoardApp {
         }
 
         // Update employee name with designation
-        document.getElementById('employeeName').textContent = `${employee.name} (${employee.empNo}) - ${this.abbreviateDesignation(employee.designation)}`;
+        document.getElementById('employeeName').textContent = `${employee.name}`;
+        document.getElementById('employeeInfo').textContent = `${employee.empNo} • ${this.abbreviateDesignation(employee.designation)}`;
 
         // Calculate additional metrics using stored values
         let totalDeductions = 0;

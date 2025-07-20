@@ -929,9 +929,27 @@ body {
   gap: 1rem;
 }
 
+.employee-title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
 .employee-header h2 {
   font-size: 1.8rem;
   color: var(--text-primary);
+  margin: 0;
+}
+
+.employee-info {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  background: var(--background-color);
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
 }
 
 .employee-metrics {
@@ -1173,6 +1191,21 @@ tr:hover {
   .employee-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .employee-title-section {
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .employee-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .employee-info {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
   }
   
   .employee-metrics {
