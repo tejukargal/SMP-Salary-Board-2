@@ -1469,8 +1469,8 @@ class SalaryBoardApp {
                             <span class="info-value">${employee.records.length}</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Designation:</span>
-                            <span class="info-value">${employee.designation}</span>
+                            <span class="info-label">Employee ID:</span>
+                            <span class="info-value">${employee.empNo}</span>
                         </div>
                     </div>
                 </div>
@@ -1516,6 +1516,9 @@ class SalaryBoardApp {
             totalLIC += record.lic;
             totalFBF += record.fbf;
         });
+
+        // Store calculated deductions in employee object for summary card
+        employee.totalDeductions = totalDeductions;
 
         // Clear employee metrics section as we'll create a summary card at the top of salary history
         const employeeMetrics = document.getElementById('employeeMetrics');
@@ -1643,6 +1646,11 @@ class SalaryBoardApp {
             </div>
         `;
         
+        // Add click event to show total breakdown
+        card.addEventListener('click', () => {
+            this.showEmployeeTotalBreakdown(employee);
+        });
+        
         return card;
     }
 
@@ -1747,6 +1755,141 @@ class SalaryBoardApp {
                                     <span class="breakdown-item-text">
                                         FBF - ₹${this.formatIndianNumber(Math.round(record.fbf))}
                                     </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="breakdown-footer">
+                    <button class="close-breakdown-footer" aria-label="Close Modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+            <div class="breakdown-overlay"></div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal functionality
+        const closeBtn = modal.querySelector('.close-breakdown');
+        const closeFooterBtn = modal.querySelector('.close-breakdown-footer');
+        const overlay = modal.querySelector('.breakdown-overlay');
+        
+        const closeModal = () => {
+            document.body.removeChild(modal);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        closeFooterBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        // Close on Escape key
+        const escapeHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        };
+        document.addEventListener('keydown', escapeHandler);
+    }
+
+    showEmployeeTotalBreakdown(employee) {
+        // Calculate totals for all allowances and deductions
+        let totalBasic = 0, totalDA = 0, totalHRA = 0, totalIR = 0, totalSFN = 0, totalSpayTypist = 0, totalP = 0;
+        let totalIT = 0, totalPT = 0, totalGSLIC = 0, totalLIC = 0, totalFBF = 0;
+
+        employee.records.forEach(record => {
+            totalBasic += record.basic;
+            totalDA += record.da;
+            totalHRA += record.hra;
+            totalIR += record.ir;
+            totalSFN += record.sfn;
+            totalSpayTypist += record.spayTypist;
+            totalP += record.p;
+            totalIT += record.it;
+            totalPT += record.pt;
+            totalGSLIC += record.gslic;
+            totalLIC += record.lic;
+            totalFBF += record.fbf;
+        });
+
+        // Create breakdown modal
+        const modal = document.createElement('div');
+        modal.className = 'breakdown-modal';
+        modal.innerHTML = `
+            <div class="breakdown-content">
+                <div class="breakdown-header">
+                    <div class="breakdown-title-section">
+                        <h3>${employee.name}</h3>
+                        <span class="breakdown-employee-badge">Total Summary</span>
+                    </div>
+                    <button class="close-breakdown" aria-label="Close">&times;</button>
+                </div>
+                
+                <div class="breakdown-text">
+                    <div class="breakdown-summary">
+                        <div class="summary-line total">
+                            <span class="summary-label">Total Gross Salary</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(employee.totalGross))}</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span class="summary-label">Total Deductions</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(employee.totalDeductions))}</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span class="summary-label">Total Net Salary</span>
+                            <span class="summary-value">₹${this.formatIndianNumber(Math.round(employee.totalNet))}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown-separator"></div>
+                    
+                    <div class="breakdown-sections">
+                        <div class="breakdown-section">
+                            <h4 class="section-title">Total Allowances</h4>
+                            <div class="section-content">
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">Basic - ₹${this.formatIndianNumber(Math.round(totalBasic))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">DA - ₹${this.formatIndianNumber(Math.round(totalDA))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">HRA - ₹${this.formatIndianNumber(Math.round(totalHRA))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">IR - ₹${this.formatIndianNumber(Math.round(totalIR))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">SFN - ₹${this.formatIndianNumber(Math.round(totalSFN))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">SPAY - ₹${this.formatIndianNumber(Math.round(totalSpayTypist))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">P - ₹${this.formatIndianNumber(Math.round(totalP))}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="breakdown-section">
+                            <h4 class="section-title">Total Deductions</h4>
+                            <div class="section-content">
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">IT - ₹${this.formatIndianNumber(Math.round(totalIT))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">PT - ₹${this.formatIndianNumber(Math.round(totalPT))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">GSLIC - ₹${this.formatIndianNumber(Math.round(totalGSLIC))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">LIC - ₹${this.formatIndianNumber(Math.round(totalLIC))}</span>
+                                </div>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">FBF - ₹${this.formatIndianNumber(Math.round(totalFBF))}</span>
                                 </div>
                             </div>
                         </div>
