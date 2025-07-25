@@ -362,6 +362,11 @@ class SalaryBoardApp {
             const gslic = parseFloat(record['GSLIC']?.replace(/,/g, '') || 0);
             const lic = parseFloat(record['LIC']?.replace(/,/g, '') || 0);
             const fbf = parseFloat(record['FBF']?.replace(/,/g, '') || 0);
+            
+            // Additional employee information
+            const nextIncrementDate = record['Next Increment Date'] || '';
+            const group = record['Group'] || '';
+            const bankAc = record['Bank A/C Number'] || '';
 
             // Employee data
             if (!this.processedData.employees[empNo]) {
@@ -395,6 +400,9 @@ class SalaryBoardApp {
                 gslic,
                 lic,
                 fbf,
+                nextIncrementDate,
+                group,
+                bankAc,
                 record
             });
 
@@ -867,10 +875,18 @@ class SalaryBoardApp {
         let title, items;
         if (breakdownType === 'allowances') {
             title = `${breakdownType === 'allowances' ? 'Allowances' : 'Deductions'} Breakdown`;
+            
+            // Calculate DA and HRA percentages based on rounded amounts
+            const roundedBasic = Math.round(data.basic);
+            const roundedDA = Math.round(data.da);
+            const roundedHRA = Math.round(data.hra);
+            const daPercentage = roundedBasic > 0 ? ((roundedDA / roundedBasic) * 100).toFixed(2) : 0;
+            const hraPercentage = roundedBasic > 0 ? ((roundedHRA / roundedBasic) * 100).toFixed(2) : 0;
+            
             items = [
                 { label: 'Basic', value: data.basic },
-                { label: 'DA', value: data.da },
-                { label: 'HRA', value: data.hra },
+                { label: 'DA', value: data.da, percentage: daPercentage },
+                { label: 'HRA', value: data.hra, percentage: hraPercentage },
                 { label: 'IR', value: data.ir },
                 { label: 'SFN', value: data.sfn },
                 { label: 'SPAY', value: data.spayTypist },
@@ -911,9 +927,10 @@ class SalaryBoardApp {
                             <h4 class="section-title">${breakdownType === 'allowances' ? 'Individual Allowances' : 'Individual Deductions'}</h4>
                             <div class="section-content">
                                 ${items.map(item => `
-                                    <div class="breakdown-line">
-                                        <span class="breakdown-label">${item.label}</span>
-                                        <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(item.value))}</span>
+                                    <div class="breakdown-line-horizontal">
+                                        <span class="breakdown-item-text">
+                                            ${item.label} - ₹${this.formatIndianNumber(Math.round(item.value))}${item.percentage ? ` (${item.percentage}%)` : ''}
+                                        </span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1422,6 +1439,42 @@ class SalaryBoardApp {
         // Update employee name with designation
         document.getElementById('employeeName').textContent = `${employee.name}`;
         document.getElementById('employeeInfo').textContent = `${employee.empNo} • ${this.abbreviateDesignation(employee.designation)}`;
+        
+        // Add Bank A/c and Group information from most recent month
+        const employeeAdditionalInfo = document.getElementById('employeeAdditionalInfo');
+        if (employeeAdditionalInfo) {
+            // Sort records by date to get the most recent one (create a copy to avoid mutating original)
+            const sortedRecords = [...employee.records].sort((a, b) => {
+                if (a.year !== b.year) return b.year - a.year;
+                return this.getMonthNumber(b.month) - this.getMonthNumber(a.month);
+            });
+            
+            const recentRecord = sortedRecords[0];
+            const bankAc = recentRecord?.bankAc || 'N/A';
+            const group = recentRecord?.group || 'N/A';
+            const periodRange = employee.records.length > 1 ? 
+                `${sortedRecords[sortedRecords.length - 1].month} ${sortedRecords[sortedRecords.length - 1].year} - ${recentRecord.month} ${recentRecord.year}` :
+                `${recentRecord.month} ${recentRecord.year}`;
+                
+            employeeAdditionalInfo.innerHTML = `
+                <div class="additional-info-grid">
+                    <div class="info-item period">
+                        <span class="info-label">Period:</span>
+                        <span class="info-value">${periodRange}</span>
+                    </div>
+                    <div class="info-item-row">
+                        <div class="info-item">
+                            <span class="info-label">Bank A/C:</span>
+                            <span class="info-value">${bankAc}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Group:</span>
+                            <span class="info-value">${group}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
         // Calculate additional metrics using stored values
         let totalDeductions = 0;
@@ -1550,6 +1603,12 @@ class SalaryBoardApp {
                     <span class="metric-type">Net:</span>
                     <span class="metric-value net-value">₹${this.formatIndianNumber(Math.round(record.netSalary))}</span>
                 </div>
+                ${record.nextIncrementDate ? `
+                <div class="metric-row increment-date">
+                    <span class="metric-type">Next Increment:</span>
+                    <span class="metric-value increment-value">${record.nextIncrementDate}</span>
+                </div>
+                ` : ''}
             </div>
         `;
         
@@ -1596,33 +1655,40 @@ class SalaryBoardApp {
                         <div class="breakdown-section">
                             <h4 class="section-title">Allowances</h4>
                             <div class="section-content">
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">Basic</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.basic))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        Basic - ₹${this.formatIndianNumber(Math.round(record.basic))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">DA</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.da))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        DA - ₹${this.formatIndianNumber(Math.round(record.da))} (${Math.round(record.basic) > 0 ? ((Math.round(record.da) / Math.round(record.basic)) * 100).toFixed(2) : 0}%)
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">HRA</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.hra))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        HRA - ₹${this.formatIndianNumber(Math.round(record.hra))} (${Math.round(record.basic) > 0 ? ((Math.round(record.hra) / Math.round(record.basic)) * 100).toFixed(2) : 0}%)
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">IR</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.ir))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        IR - ₹${this.formatIndianNumber(Math.round(record.ir))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">SFN</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.sfn))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        SFN - ₹${this.formatIndianNumber(Math.round(record.sfn))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">SP-Typist</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.spayTypist))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        SP-Typist - ₹${this.formatIndianNumber(Math.round(record.spayTypist))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">P Allow</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.p))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        P Allow - ₹${this.formatIndianNumber(Math.round(record.p))}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -1630,25 +1696,30 @@ class SalaryBoardApp {
                         <div class="breakdown-section">
                             <h4 class="section-title">Deductions</h4>
                             <div class="section-content">
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">IT</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.it))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        IT - ₹${this.formatIndianNumber(Math.round(record.it))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">PT</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.pt))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        PT - ₹${this.formatIndianNumber(Math.round(record.pt))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">GSLIC</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.gslic))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        GSLIC - ₹${this.formatIndianNumber(Math.round(record.gslic))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">LIC</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.lic))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        LIC - ₹${this.formatIndianNumber(Math.round(record.lic))}
+                                    </span>
                                 </div>
-                                <div class="breakdown-line">
-                                    <span class="breakdown-label">FBF</span>
-                                    <span class="breakdown-value">₹${this.formatIndianNumber(Math.round(record.fbf))}</span>
+                                <div class="breakdown-line-horizontal">
+                                    <span class="breakdown-item-text">
+                                        FBF - ₹${this.formatIndianNumber(Math.round(record.fbf))}
+                                    </span>
                                 </div>
                             </div>
                         </div>
