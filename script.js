@@ -830,11 +830,6 @@ class SalaryBoardApp {
         card.className = 'comprehensive-metric-card';
         
         card.innerHTML = `
-            <div class="comprehensive-header">
-                <h3>${data.employee.name}</h3>
-                <div class="period-info">${data.employee.empNo} • ${this.abbreviateDesignation(data.employee.designation)} • ${data.totalRecords} Records</div>
-            </div>
-            
             <div class="comprehensive-content">
                 <div class="summary-section">
                     <div class="summary-item primary">
