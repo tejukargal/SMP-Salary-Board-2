@@ -1064,6 +1064,11 @@ body {
   margin-bottom: 2rem;
 }
 
+.employee-metrics:empty {
+  display: none;
+  margin-bottom: 0;
+}
+
 /* Employee salary rows use exact same styling as consolidated table */
 .employee-salary-row {
   transition: var(--transition);

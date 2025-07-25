@@ -1463,16 +1463,6 @@ class SalaryBoardApp {
                             <span class="info-value">${group}</span>
                         </div>
                     </div>
-                    <div class="info-item-row">
-                        <div class="info-item">
-                            <span class="info-label">Records:</span>
-                            <span class="info-value">${employee.records.length}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Employee ID:</span>
-                            <span class="info-value">${employee.empNo}</span>
-                        </div>
-                    </div>
                 </div>
             `;
         }
