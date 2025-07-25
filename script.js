@@ -1453,18 +1453,24 @@ class SalaryBoardApp {
                 
             employeeAdditionalInfo.innerHTML = `
                 <div class="additional-info-grid">
-                    <div class="info-item period">
-                        <span class="info-label">Period:</span>
-                        <span class="info-value">${periodRange}</span>
-                    </div>
                     <div class="info-item-row">
+                        <div class="info-item">
+                            <span class="info-label">Period:</span>
+                            <span class="info-value">${periodRange}</span>
+                        </div>
                         <div class="info-item">
                             <span class="info-label">Bank A/C:</span>
                             <span class="info-value">${bankAc}</span>
                         </div>
+                    </div>
+                    <div class="info-item-row">
                         <div class="info-item">
                             <span class="info-label">Group:</span>
                             <span class="info-value">${group}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Records:</span>
+                            <span class="info-value">${employee.records.length}</span>
                         </div>
                     </div>
                 </div>
