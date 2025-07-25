@@ -1330,7 +1330,7 @@ tr:hover {
   }
   
   .info-item-row {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
   }
   
@@ -1386,6 +1386,21 @@ tr:hover {
   .employee-metrics {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
+  }
+  
+  .info-item-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .info-item {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .info-label {
+    min-width: 60px;
+    font-size: 0.75rem;
   }
   
   .metric-card {

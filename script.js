@@ -1546,6 +1546,9 @@ class SalaryBoardApp {
 
         employeeMetrics.appendChild(employeeCard);
 
+        // Update Salary History header with period information
+        this.updateSalaryHistoryHeader(employee);
+        
         // Update salary history with card design similar to monthly cards
         this.renderEmployeeSalaryCards(employee);
     }
@@ -1912,6 +1915,24 @@ class SalaryBoardApp {
 
     showLoading() {
         document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    updateSalaryHistoryHeader(employee) {
+        const salaryHistoryHeader = document.getElementById('salaryHistoryHeader');
+        if (!salaryHistoryHeader) return;
+
+        // Sort records by date to get the most recent one (create a copy to avoid mutating original)
+        const sortedRecords = [...employee.records].sort((a, b) => {
+            if (a.year !== b.year) return b.year - a.year;
+            return this.getMonthNumber(b.month) - this.getMonthNumber(a.month);
+        });
+        
+        const recentRecord = sortedRecords[0];
+        const periodRange = employee.records.length > 1 ? 
+            `${sortedRecords[sortedRecords.length - 1].month} ${sortedRecords[sortedRecords.length - 1].year} - ${recentRecord.month} ${recentRecord.year}` :
+            `${recentRecord.month} ${recentRecord.year}`;
+        
+        salaryHistoryHeader.innerHTML = `Salary History <span style="font-weight: 400; color: var(--text-secondary); font-size: 0.85em;">(${periodRange})</span>`;
     }
 
     hideLoading() {
