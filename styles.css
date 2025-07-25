@@ -1571,6 +1571,22 @@ table,
   background: var(--background-color);
 }
 
+.monthly-unified-card.summary-card {
+  border: 2px solid var(--primary-color);
+  background: var(--background-color);
+  box-shadow: var(--shadow-lg);
+}
+
+.monthly-unified-card.summary-card .card-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1976d2 100%);
+  color: white;
+}
+
+.monthly-unified-card.summary-card .period-title,
+.monthly-unified-card.summary-card .employee-badge {
+  color: white;
+}
+
 .card-header {
   margin: -1.5rem -1.5rem 1rem -1.5rem;
   padding: 0.75rem 1.5rem;

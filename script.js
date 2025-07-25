@@ -1455,22 +1455,22 @@ class SalaryBoardApp {
                 <div class="additional-info-grid">
                     <div class="info-item-row">
                         <div class="info-item">
-                            <span class="info-label">Period:</span>
-                            <span class="info-value">${periodRange}</span>
-                        </div>
-                        <div class="info-item">
                             <span class="info-label">Bank A/C:</span>
                             <span class="info-value">${bankAc}</span>
                         </div>
-                    </div>
-                    <div class="info-item-row">
                         <div class="info-item">
                             <span class="info-label">Group:</span>
                             <span class="info-value">${group}</span>
                         </div>
+                    </div>
+                    <div class="info-item-row">
                         <div class="info-item">
                             <span class="info-label">Records:</span>
                             <span class="info-value">${employee.records.length}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Designation:</span>
+                            <span class="info-value">${employee.designation}</span>
                         </div>
                     </div>
                 </div>
@@ -1517,34 +1517,9 @@ class SalaryBoardApp {
             totalFBF += record.fbf;
         });
 
-        // Update employee metrics (without designation card)
+        // Clear employee metrics section as we'll create a summary card at the top of salary history
         const employeeMetrics = document.getElementById('employeeMetrics');
         employeeMetrics.innerHTML = '';
-
-        // Create employee comprehensive metric card similar to dashboard
-        const employeeCard = this.createEmployeeComprehensiveMetricCard({
-            employee: employee,
-            totalRecords: employee.records.length,
-            grossSalary: employee.totalGross,
-            deductions: totalDeductions,
-            netSalary: employee.totalNet,
-            // Allowances
-            basic: totalBasic,
-            da: totalDA,
-            hra: totalHRA,
-            ir: totalIR,
-            sfn: totalSFN,
-            spayTypist: totalSpayTypist,
-            p: totalP,
-            // Deductions
-            it: totalIT,
-            pt: totalPT,
-            gslic: totalGSLIC,
-            lic: totalLIC,
-            fbf: totalFBF
-        });
-
-        employeeMetrics.appendChild(employeeCard);
 
         // Update Salary History header with period information
         this.updateSalaryHistoryHeader(employee);
@@ -1570,6 +1545,10 @@ class SalaryBoardApp {
         } else {
             cardsContainer.innerHTML = '';
         }
+
+        // Create summary card at the top
+        const summaryCard = this.createEmployeeSummaryCard(employee);
+        cardsContainer.appendChild(summaryCard);
 
         // Sort records by date (newest first)
         const sortedRecords = employee.records.sort((a, b) => {
@@ -1619,6 +1598,50 @@ class SalaryBoardApp {
         card.addEventListener('click', () => {
             this.showEmployeeSalaryBreakdown(record, employee);
         });
+        
+        return card;
+    }
+
+    createEmployeeSummaryCard(employee) {
+        const card = document.createElement('div');
+        card.className = 'monthly-unified-card summary-card';
+        
+        // Calculate period range for display
+        const sortedRecords = [...employee.records].sort((a, b) => {
+            if (a.year !== b.year) return a.year - b.year;
+            return this.getMonthNumber(a.month) - this.getMonthNumber(b.month);
+        });
+        
+        const startDate = sortedRecords[0];
+        const endDate = sortedRecords[sortedRecords.length - 1];
+        const periodRange = employee.records.length > 1 ? 
+            `${startDate.month} ${startDate.year} - ${endDate.month} ${endDate.year}` :
+            `${endDate.month} ${endDate.year}`;
+        
+        card.innerHTML = `
+            <div class="card-header">
+                <h3 class="period-title">Total Summary</h3>
+                <span class="employee-badge">${periodRange}</span>
+            </div>
+            <div class="unified-metrics">
+                <div class="metric-row">
+                    <span class="metric-type">Gross:</span>
+                    <span class="metric-value gross-value">₹${this.formatIndianNumber(Math.round(employee.totalGross))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Deductions:</span>
+                    <span class="metric-value deductions-value">₹${this.formatIndianNumber(Math.round(employee.totalDeductions))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Net:</span>
+                    <span class="metric-value net-value">₹${this.formatIndianNumber(Math.round(employee.totalNet))}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-type">Records:</span>
+                    <span class="metric-value records-value">${employee.records.length}</span>
+                </div>
+            </div>
+        `;
         
         return card;
     }
